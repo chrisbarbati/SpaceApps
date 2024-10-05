@@ -1,3 +1,44 @@
+:root{
+    /*Colors*/
+    --bg-color: #2e3440;
+    --foreground-color: #4c566a;
+    --text-color: #eceff4;
+    --accent: #88c0d0;
+
+      /* Font Sizes */
+      --font-size-small: 0.875rem; /* 14px */
+      --font-size-medium: 1rem; /* 16px */
+      --font-size-large: 1.25rem; /* 20px */
+      --font-size-xlarge: 1.5rem; /* 24px */
+      --font-size-xxlarge: 2rem; /* 32px */
+      --font-size-title: 2.5rem; /* 40px */
+}
+
+h1 {
+    font-size: var(--font-size-title);
+}
+
+p {
+    font-size: var(--font-size-medium);
+}
+
+/*LANDING PAGE*/
+.landing-container{
+    background-color: var(--bg-color);
+    height: 100vh;
+    color: var(--text-color);
+    background-image: url(./assets/hero-image.jpg);
+    background-position: center;
+    background-repeat: no-repeat;
+    display: flex;
+    justify-content: center;
+    align-items: center;    
+}
+/*MAP & FORM*/
+.map-container{
+    background-color: var(--bg-color);
+    height: 100vh;
+}
 *, *::before, *::after {
     margin: 0;
     padding: 0;
