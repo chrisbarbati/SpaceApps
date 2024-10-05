@@ -1,6 +1,4 @@
 import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
 import './App.css'
 import axios from "axios";
 import {
@@ -13,17 +11,17 @@ import {
 
 /**Views**/
 import LandingPage from './components/landing'
-import Map from './components/map'
+import MapComponent from './components/MapComponent'
 
 function App() {
-  const [count, setCount] = useState(0)
+    const [count, setCount] = useState(0);
 
   return (
     <>
     <LandingPage />
-    <Map />
+    <MapComponent />
      </>
   )
 }
 
-export default App
+export default App;
