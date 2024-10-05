@@ -1,0 +1,35 @@
+*, *::before, *::after {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background-color: #2e3440;
+    color: #eceff4;
+}
+
+#main-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+#sidebar {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    width: 20%; /* Adjust the width as needed */
+    background-color: #4c566a;
+    height: 100vh;
+}
+
+#map-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 80%; /* Adjust the width as needed */
+    background-color: #2e3440;
+}
