@@ -74,7 +74,7 @@ p {
 }
 
 #sidebar {
-    max-width: 30%;
+    max-width: 500px;
     height: 100%;
     padding: 20px;
     background-color: var(--foreground-color);
@@ -116,8 +116,9 @@ label {
 input[type="number"],
 input[type="email"],
 .styled-select {
-    width: 100%; /* Full width */
-    padding: 10px; /* Consistent padding */
+    width: 100%; 
+    padding: 10px; 
+    margin-top: 10px;
     border: 1px solid var(--accent);
     border-radius: 4px;
     background-color: var(--foreground-color);
@@ -181,7 +182,6 @@ input[type="email"]:focus,
     position: absolute;
     right: 15px;
     top: 15px;
-    font-size: 12px;
     color: var(--text-color);
 }
 
@@ -199,18 +199,19 @@ input[type="email"]:focus,
 .slider-container {
     display: flex;
     flex-direction: column;
-    width: 100%; /* Full width */
+    width: 100%; 
 }
 /* Slider Styles */
 .slider {
-    margin-top: 5px; 
     appearance: none;
     height: 5px; 
     border-radius: 5px; 
     background: var(--accent); 
     cursor: pointer;
 }
-
+.slider-container{
+    margin-top: 10px;
+}
 .slider::-webkit-slider-thumb {
     -webkit-appearance: none;
     appearance: none;
