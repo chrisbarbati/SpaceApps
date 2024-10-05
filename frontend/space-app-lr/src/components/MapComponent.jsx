@@ -4,7 +4,7 @@ import axios from "axios";
 import { Map, View } from "ol";
 import TileLayer from "ol/layer/Tile";
 import OSM from "ol/source/OSM";
-import { fromLonLat, get, toLonLat } from "ol/proj";
+import { fromLonLat, toLonLat } from "ol/proj";
 import VectorLayer from "ol/layer/Vector";
 import VectorSource from "ol/source/Vector";
 import { Style, Icon, Stroke, Fill } from "ol/style";
@@ -17,7 +17,11 @@ const MapComponent = () => {
     const markerRef = useRef(null);
     const [map, setMap] = useState(null);
     const [coordinates, setCoordinates] = useState(null);
-    const [isNotificationEnabled, setIsNotificationEnabled] = useState(false); // Track checkbox state
+    const [isNotificationEnabled, setIsNotificationEnabled] = useState(false);
+    const [lat, setLat] = useState("");
+    const [lng, setLng] = useState("");
+    const [email, setEmail] = useState("");
+    const [leadTime, setLeadTime] = useState("");
 
     const callApiTest = async () => {
         try {
@@ -109,10 +113,31 @@ const MapComponent = () => {
 
         const [lng, lat] = toLonLat(coordinate);
         setCoordinates({ lat: lat.toFixed(6), lng: lng.toFixed(6) });
+        setLat(lat.toFixed(6));
+        setLng(lng.toFixed(6));
     };
 
     const handleCheckboxChange = (event) => {
         setIsNotificationEnabled(event.target.checked);
+    };
+
+    const handleSubmit = (event) => {
+        event.preventDefault();
+        if (lat && lng) {
+            // Update marker position only (don't submit form)
+            updateMarkerPosition(
+                fromLonLat([parseFloat(lng), parseFloat(lat)])
+            );
+            if (isNotificationEnabled && email && leadTime) {
+                // Proceed with form submission and API call when notifications are enabled
+
+                console.log("Form submitted with notification details");
+            } else if (!isNotificationEnabled) {
+                console.log("Lat/Lng updated without notifications");
+            } else {
+                console.log("Please fill all required fields");
+            }
+        }
     };
 
     return (
@@ -129,11 +154,25 @@ const MapComponent = () => {
                     <p className="text-center">Or input Lat/Long manually:</p>
                 </div>
 
-                <form>
+                <form onSubmit={handleSubmit}>
                     <label>Latitude</label>
-                    <input id="lat-input" type="number" step="any" required />
+                    <input
+                        id="lat-input"
+                        type="number"
+                        step="any"
+                        value={lat}
+                        onChange={(e) => setLat(e.target.value)}
+                        required
+                    />
                     <label>Longitude</label>
-                    <input id="lng-input" type="number" step="any" required />
+                    <input
+                        id="lng-input"
+                        type="number"
+                        step="any"
+                        value={lng}
+                        onChange={(e) => setLng(e.target.value)}
+                        required
+                    />
                     <div className="email-container">
                         <div className="notify-checkbox">
                             <label className="me-2">
@@ -145,46 +184,30 @@ const MapComponent = () => {
                             />
                         </div>
 
-                        <label
-                            className={`fade-label ${
-                                isNotificationEnabled ? "fade-in" : "fade-out"
-                            }`}
-                        >
-                            Email
-                        </label>
-                        <input
-                            id="email-input"
-                            type="email"
-                            required={isNotificationEnabled} // Required when checkbox is checked
-                            disabled={!isNotificationEnabled} // Disable when checkbox is unchecked
-                            className={`fade-input ${
-                                isNotificationEnabled ? "fade-in" : "fade-out"
-                            }`}
-                        />
-
-                        <label
-                            className={`fade-label ${
-                                isNotificationEnabled ? "fade-in" : "fade-out"
-                            }`}
-                        >
-                            Lead Time
-                        </label>
-                        <input
-                            id="lead-time-input"
-                            type="number"
-                            required={isNotificationEnabled}
-                            disabled={!isNotificationEnabled}
-                            className={`fade-input ${
-                                isNotificationEnabled ? "fade-in" : "fade-out"
-                            }`}
-                        />
+                        {isNotificationEnabled && (
+                            <>
+                                <label>Email</label>
+                                <input
+                                    id="email-input"
+                                    type="email"
+                                    value={email}
+                                    onChange={(e) => setEmail(e.target.value)}
+                                    required={isNotificationEnabled}
+                                />
+                                <label>Lead Time</label>
+                                <input
+                                    id="lead-time-input"
+                                    type="number"
+                                    value={leadTime}
+                                    onChange={(e) =>
+                                        setLeadTime(e.target.value)
+                                    }
+                                    required={isNotificationEnabled}
+                                />
+                            </>
+                        )}
                     </div>
-                    <button
-                        id="submit"
-                        className="mt-4"
-                        type="submit"
-                        onClick={callApiTest}
-                    >
+                    <button id="submit" className="mt-4" type="submit">
                         Submit
                     </button>
                 </form>
