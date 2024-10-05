@@ -182,13 +182,14 @@ const MapComponent = () => {
                     lng: parseFloat(lng),
                     email: email,
                     leadTime: parseInt(leadTime),
-                    notificationEnabled: isNotificationEnabled,
+                    boundingBox: 12.44693,
+                    cloudCoverage: 20,
                 };
 
                 try {
                     // Send form data as JSON to the backend
                     const response = await axios.post(
-                        "http://localhost:8080/api/submit",
+                        "http://localhost:8080/api/addEmailNotification",
                         formData,
                         {
                             headers: {
