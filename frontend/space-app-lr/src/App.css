@@ -54,9 +54,13 @@ p {
 }
 
 #sidebar {
-    width: 20%;
+    max-width: 30%;
     padding: 20px;
     background-color: var(--foreground-color);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
 }
 
 #map-container {
@@ -75,8 +79,12 @@ form {
     flex-direction: column;
     justify-content: center;
     gap: 15px;
+    width: 100%; 
 }
-
+.form-header{
+    margin-bottom: 1em;
+    text-align: center;
+}
 label {
     font-size: var(--font-size-medium);
     color: var(--text-color);
@@ -115,4 +123,11 @@ button {
 
 button:hover {
     background-color: var(--accent-hover);
+}
+
+.email-container{
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    width: 100%;
 }

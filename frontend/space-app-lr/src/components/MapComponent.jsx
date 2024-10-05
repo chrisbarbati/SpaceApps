@@ -17,6 +17,7 @@ const MapComponent = () => {
     const markerRef = useRef(null);
     const [map, setMap] = useState(null);
     const [coordinates, setCoordinates] = useState(null);
+    const [isNotificationEnabled, setIsNotificationEnabled] = useState(false); // Track checkbox state
 
     useEffect(() => {
         const sceneCenter = fromLonLat([-79.457808, 44.593214]);
@@ -90,7 +91,6 @@ const MapComponent = () => {
         return () => initialMap.setTarget(null);
     }, []);
 
-    // Function to update marker position
     const updateMarkerPosition = (coordinate) => {
         if (markerRef.current) {
             markerRef.current.getGeometry().setCoordinates(coordinate);
@@ -100,46 +100,75 @@ const MapComponent = () => {
         setCoordinates({ lat: lat.toFixed(6), lng: lng.toFixed(6) });
     };
 
+    const handleCheckboxChange = (event) => {
+        setIsNotificationEnabled(event.target.checked);
+    };
+
     return (
         <div id="main-container">
             <div id="sidebar">
-                <h1 className="text-center">Search Location</h1>
-                <p className="text-center">Or input Lat/Long manually:</p>
+                <div className="form-header">
+                    <h1 className="text-center">Search Location</h1>
+                    <input
+                        id="search-box"
+                        type="text"
+                        placeholder="Search for a location..."
+                        className="mb-2"
+                    />
+                    <p className="text-center">Or input Lat/Long manually:</p>
+                </div>
+
                 <form>
-    <label>Latitude</label>
-    <input
-        id="lat-input"
-        type="number"
-        step="any"
-        required
-    />
-    <label>Longitude</label>
-    <input
-        id="lng-input"
-        type="number"
-        step="any"
-        required
-    />
-    <label>Email</label>
-    <input
-        id="email-input"
-        type="email"
-    />
-    <label>Lead Time</label>
-    <input
-        id="lead-time-input"
-        type="number"
-    />
-    <button id="go-to-location" type="submit">Go to Location</button>
-</form>
-            
+                    <label>Latitude</label>
+                    <input id="lat-input" type="number" step="any" required />
+                    <label>Longitude</label>
+                    <input id="lng-input" type="number" step="any" required />
+                    <div className="email-container">
+                        <div className="notify-checkbox">
+                            <label className="me-2">
+                                Receive a notification for selected location?
+                            </label>
+                            <input
+                                type="checkbox"
+                                onChange={handleCheckboxChange}
+                            />
+                        </div>
+                        <label>Email</label>
+                        <input
+                            id="email-input"
+                            type="email"
+                            required={isNotificationEnabled} // Required when checkbox is checked
+                            disabled={!isNotificationEnabled} // Disable when checkbox is unchecked
+                            style={{
+                                backgroundColor: isNotificationEnabled
+                                    ? "#4c566a"
+                                    : "#b0b3b8",
+                            }}
+                        />
+                        <label>Lead Time</label>
+                        <input
+                            id="lead-time-input"
+                            type="number"
+                            required={isNotificationEnabled}
+                            disabled={!isNotificationEnabled}
+                            style={{
+                                backgroundColor: isNotificationEnabled
+                                    ? "#4c566a"
+                                    : "#b0b3b8",
+                            }}
+                        />
+                    </div>
+                    <button id="go-to-location" type="submit">
+                        Go to Location
+                    </button>
+                </form>
             </div>
 
             <div id="map-container">
                 <div
                     ref={mapRef}
                     id="map"
-                    style={{ width: "60%", height: "500px" }}
+                    style={{ width: "90%", height: "500px" }}
                 ></div>
                 {coordinates && (
                     <p id="coordinates" className="pt-2">
