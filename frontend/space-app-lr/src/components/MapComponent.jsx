@@ -2,21 +2,24 @@ import "ol/ol.css";
 import React, { useEffect, useRef, useState } from "react";
 
 import { Map, View } from "ol";
+import { fromLonLat, toLonLat } from "ol/proj";
+import { Style, Icon, Stroke, Fill } from "ol/style";
+import { getDistance } from "ol/sphere";
 import TileLayer from "ol/layer/Tile";
 import OSM from "ol/source/OSM";
-import { fromLonLat, toLonLat } from "ol/proj";
 import VectorLayer from "ol/layer/Vector";
 import VectorSource from "ol/source/Vector";
-import { Style, Icon, Stroke, Fill } from "ol/style";
 import Feature from "ol/Feature";
 import Point from "ol/geom/Point";
 import Polygon from "ol/geom/Polygon";
+import KML from "ol/format/KML";
 
 const MapComponent = () => {
     const mapRef = useRef(null);
     const markerRef = useRef(null);
     const [map, setMap] = useState(null);
     const [coordinates, setCoordinates] = useState(null);
+    const [kmlLayer, setKmlLayer] = useState(null);
     const [isNotificationEnabled, setIsNotificationEnabled] = useState(false); // Track checkbox state
 
     useEffect(() => {
@@ -67,6 +70,13 @@ const MapComponent = () => {
             source: vectorSource,
         });
 
+        const kmlLayer = new VectorLayer({
+            source: new VectorSource({
+                url: "centers.kml",
+                format: new KML(),
+            }),
+        });
+
         const initialMap = new Map({
             target: mapRef.current,
             layers: [
@@ -74,6 +84,7 @@ const MapComponent = () => {
                     source: new OSM(),
                 }),
                 vectorLayer,
+                kmlLayer,
             ],
             view: new View({
                 center: sceneCenter,
@@ -98,6 +109,36 @@ const MapComponent = () => {
 
         const [lng, lat] = toLonLat(coordinate);
         setCoordinates({ lat: lat.toFixed(6), lng: lng.toFixed(6) });
+        displayClosestKmlPoint(coordinate);
+    };
+
+    const displayClosestKmlPoint = (coordinate) => {
+        console.log("1");
+        if (!kmlLayer) return;
+        console.log("2");
+
+        let closestFeature = null;
+        let minDistance = Infinity;
+
+        kmlLayer.forEachFeature((feature) => {
+            const featureCoord = feature.getGeometry().getCoordinates();
+            const distance = getDistance(coordinate, featureCoord);
+            console.log("thing running");
+            if (distance < minDistance) {
+                minDistance = distance;
+                closestFeature = feature;
+                console.log("closest found");
+            }
+        });
+
+        if (closestFeature) {
+            // Optionally, adjust styling of the closest feature here if needed
+            console.log("Closest KML feature:", closestFeature);
+
+            // Clear existing KML features and add only the closest one
+            kmlLayer.clear();
+            kmlLayer.addFeature(closestFeature);
+        }
     };
 
     const handleCheckboxChange = (event) => {
