@@ -65,7 +65,7 @@ p {
 
 #map-container {
     flex: 3;
-    padding: 20px;
+    padding: 1.5em;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -130,4 +130,22 @@ button:hover {
     flex-direction: column;
     gap: 15px;
     width: 100%;
+}
+/*Form Animations*/
+.fade-label,
+.fade-input {
+    opacity: 0; 
+    transition: opacity 0.5s ease-in-out;
+    height: auto;
+    display: block;
+}
+
+.fade-in {
+    opacity: 1; 
+}
+
+.fade-out {
+    opacity: 0; 
+    height: 0; 
+    overflow: hidden; 
 }

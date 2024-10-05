@@ -1,10 +1,10 @@
 import "ol/ol.css";
 import React, { useEffect, useRef, useState } from "react";
-
+import axios from "axios";
 import { Map, View } from "ol";
 import TileLayer from "ol/layer/Tile";
 import OSM from "ol/source/OSM";
-import { fromLonLat, toLonLat } from "ol/proj";
+import { fromLonLat, get, toLonLat } from "ol/proj";
 import VectorLayer from "ol/layer/Vector";
 import VectorSource from "ol/source/Vector";
 import { Style, Icon, Stroke, Fill } from "ol/style";
@@ -18,6 +18,17 @@ const MapComponent = () => {
     const [map, setMap] = useState(null);
     const [coordinates, setCoordinates] = useState(null);
     const [isNotificationEnabled, setIsNotificationEnabled] = useState(false); // Track checkbox state
+
+    const callApiTest = async () => {
+        try {
+            const response = await axios.get("http://localhost:8080/api/test");
+            if (response.data) {
+                console.log("Response from server", response.data);
+            }
+        } catch (error) {
+            console.error("Failed to fetch", error);
+        }
+    };
 
     useEffect(() => {
         const sceneCenter = fromLonLat([-79.457808, 44.593214]);
@@ -112,7 +123,7 @@ const MapComponent = () => {
                     <input
                         id="search-box"
                         type="text"
-                        placeholder="Search for a location..."
+                        placeholder="Search by Name..."
                         className="mb-2"
                     />
                     <p className="text-center">Or input Lat/Long manually:</p>
@@ -133,33 +144,48 @@ const MapComponent = () => {
                                 onChange={handleCheckboxChange}
                             />
                         </div>
-                        <label>Email</label>
+
+                        <label
+                            className={`fade-label ${
+                                isNotificationEnabled ? "fade-in" : "fade-out"
+                            }`}
+                        >
+                            Email
+                        </label>
                         <input
                             id="email-input"
                             type="email"
                             required={isNotificationEnabled} // Required when checkbox is checked
                             disabled={!isNotificationEnabled} // Disable when checkbox is unchecked
-                            style={{
-                                backgroundColor: isNotificationEnabled
-                                    ? "#4c566a"
-                                    : "#b0b3b8",
-                            }}
+                            className={`fade-input ${
+                                isNotificationEnabled ? "fade-in" : "fade-out"
+                            }`}
                         />
-                        <label>Lead Time</label>
+
+                        <label
+                            className={`fade-label ${
+                                isNotificationEnabled ? "fade-in" : "fade-out"
+                            }`}
+                        >
+                            Lead Time
+                        </label>
                         <input
                             id="lead-time-input"
                             type="number"
                             required={isNotificationEnabled}
                             disabled={!isNotificationEnabled}
-                            style={{
-                                backgroundColor: isNotificationEnabled
-                                    ? "#4c566a"
-                                    : "#b0b3b8",
-                            }}
+                            className={`fade-input ${
+                                isNotificationEnabled ? "fade-in" : "fade-out"
+                            }`}
                         />
                     </div>
-                    <button id="go-to-location" type="submit">
-                        Go to Location
+                    <button
+                        id="submit"
+                        className="mt-4"
+                        type="submit"
+                        onClick={callApiTest}
+                    >
+                        Submit
                     </button>
                 </form>
             </div>
@@ -168,7 +194,13 @@ const MapComponent = () => {
                 <div
                     ref={mapRef}
                     id="map"
-                    style={{ width: "90%", height: "500px" }}
+                    style={{
+                        width: "100%",
+                        maxWidth: "1200px",
+                        height: "600px",
+                        border: "2px solid white",
+                        boxShadow: "0 4px 20px rgba(0, 0, 0, 0.5)",
+                    }}
                 ></div>
                 {coordinates && (
                     <p id="coordinates" className="pt-2">

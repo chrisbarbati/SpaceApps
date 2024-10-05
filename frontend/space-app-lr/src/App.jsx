@@ -1,5 +1,5 @@
-import { useState } from 'react'
-import './App.css'
+import { useState } from "react";
+import "./App.css";
 import axios from "axios";
 import {
     BrowserRouter,
@@ -10,18 +10,18 @@ import {
 } from "react-router-dom";
 
 /**Views**/
-import LandingPage from './components/landing'
-import MapComponent from './components/MapComponent'
+import LandingPage from "./components/Landing";
+import MapComponent from "./components/MapComponent";
 
 function App() {
     const [count, setCount] = useState(0);
 
-  return (
-    <>
-    <LandingPage />
-    <MapComponent />
-     </>
-  )
+    return (
+        <>
+            <LandingPage />
+            <MapComponent />
+        </>
+    );
 }
 
 export default App;
