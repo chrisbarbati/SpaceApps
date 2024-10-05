@@ -28,14 +28,37 @@ const MapComponent = () => {
     const [cloudCoverage, setCloudCoverage] = useState(0); // Default to 0
     const [formMessage, setFormMessage] = useState(""); // Track form status
 
-    const callApiTest = async () => {
+    const getLandsetData = async () => {
         try {
-            const response = await axios.get("http://localhost:8080/api/test");
+            console.log("Fetching landsat data...");
+            const response = await axios.get(
+                "http://localhost:8080/api/getLandsetData"
+            );
+
             if (response.data) {
-                console.log("Response from server", response.data);
+                // Destructuring the response data to extract needed properties
+                const { cloudCoverage, boundingBox, name } = response.data;
+                ß;
+                const { minLat, minLng, maxLat, maxLng } = boundingBox;
+
+                // Logging the values
+                console.log("Cloud Coverage:", cloudCoverage);
+                console.log("Bounding Box:", {
+                    minLat,
+                    minLng,
+                    maxLat,
+                    maxLng,
+                });
+                console.log("Name:", name);
+
+                return {
+                    cloudCoverage,
+                    boundingBox: [minLat, minLng, maxLat, maxLng], // Returning as an array
+                    name,
+                };
             }
         } catch (error) {
-            console.error("Failed to fetch", error);
+            console.log("Failed to fetch landset data", error);
         }
     };
 
@@ -173,13 +196,11 @@ const MapComponent = () => {
     const handleCheckboxChange = (event) => {
         setIsNotificationEnabled(event.target.checked);
     };
-
     const handleSubmit = async (event) => {
         event.preventDefault();
         setFormMessage("");
         console.log("Form submitted!");
 
-        // Logging form data before validation
         console.log("Latitude: ", lat);
         console.log("Longitude: ", lng);
         console.log("Notification enabled: ", isNotificationEnabled);
@@ -191,24 +212,21 @@ const MapComponent = () => {
         if (lat && lng && (!isNotificationEnabled || (email && leadTime))) {
             console.log("All required fields are filled");
 
-            // Only set formSubmitted to true after all checks pass
+            // Update the marker position
             updateMarkerPosition(
                 fromLonLat([parseFloat(lng), parseFloat(lat)])
             );
 
             if (isNotificationEnabled) {
                 const formData = {
-                    // lat: parseFloat(lat),
-                    // lng: parseFloat(lng),
                     email,
                     leadTime: parseInt(leadTime),
                     boundingBox: {
-                        LON_UL: 12.44693,
-                        LAT_UR: 10.12345,
-                        LON_UR: 15.6789,
-                        LAT_UL: 14.56789,
+                        minLat: 12.44693,
+                        minLng: 10.12345,
+                        maxLat: 15.6789,
+                        maxLng: 14.56789,
                     },
-
                     cloudCoverage,
                 };
 
@@ -223,18 +241,24 @@ const MapComponent = () => {
                         formData,
                         { headers: { "Content-Type": "application/json" } }
                     );
-                    console.log("Form submitted successfully:", response.data);
 
-                    // Set formSubmitted to true only here when the submission succeeds
-                    setFormSubmitted(true);
-                    setFormMessage("Form submitted successfully!");
+                    console.log("Form submitted successfully:", response.data);
+                    setFormMessage("Form submitted!");
                 } catch (error) {
-                    console.error("Error submitting the form:", error);
+                    console.error(
+                        "Error submitting the form:",
+                        error.response ? error.response.data : error
+                    );
                     setFormMessage("Form submission failed. Please try again.");
                 }
             } else {
                 setFormMessage("Form submitted without notifications.");
             }
+
+            // Fetch landsat data
+            console.log("Fetching landsat data...");
+            const landsatData = await getLandsetData();
+            console.log("Landsat Data:", landsatData);
         } else {
             console.log("Please fill all required fields");
             setFormMessage("Please fill all required fields.");
@@ -245,7 +269,7 @@ const MapComponent = () => {
         <div id="main-container">
             <div id="sidebar">
                 <div className="form-header">
-                    <h1 className="text-center">Search Location</h1>
+                    <h1 className="text-center pt-4">Search Location</h1>
                     <input
                         id="search-box"
                         type="text"
@@ -328,11 +352,11 @@ const MapComponent = () => {
                         </div>
                     </div>
 
-                    <button id="submit" className="mt-4" type="submit">
+                    <button id="submit" className="mtt-4 mt-4" type="submit">
                         Submit
                     </button>
                 </form>
-                <p className="form-message">{formMessage}</p>
+                <p className="form-message mt-2 text-center">{formMessage}</p>
             </div>
 
             <div id="map-container">
