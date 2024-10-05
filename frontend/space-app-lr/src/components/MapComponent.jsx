@@ -17,7 +17,7 @@ import KML from "ol/format/KML";
 const MapComponent = () => {
     const mapRef = useRef(null);
     const markerRef = useRef(null);
-    const kmlLayerRef = useRef(null); // Ref to hold the KML layer
+    const kmlLayerRef = useRef(null);
     const [map, setMap] = useState(null);
     const [coordinates, setCoordinates] = useState(null);
     const [isNotificationEnabled, setIsNotificationEnabled] = useState(false);
@@ -90,6 +90,7 @@ const MapComponent = () => {
                 url: "centers.kml",
                 format: new KML(),
             }),
+            style: new Style({}),
         });
 
         kmlLayerRef.current = kmlLayer;
@@ -139,15 +140,15 @@ const MapComponent = () => {
         if (!kmlLayerRef.current) return; // if kml layer is loaded
 
         const kmlFeatures = kmlLayerRef.current.getSource().getFeatures(); // Get KML features
+        console.log("KML Features:", kmlFeatures);
         let closestFeature = null;
         let closestDistance = Infinity;
 
+        const emptyStyle = new Style({});
         kmlFeatures.forEach((feature) => {
-            feature.setStyle(null); // This hides the feature by setting style to null
+            feature.setStyle(emptyStyle);
         });
 
-        console.log(coordinate);
-        console.log(toLonLat(coordinate));
         kmlFeatures.forEach((feature) => {
             const geom = feature.getGeometry();
             if (
@@ -156,7 +157,6 @@ const MapComponent = () => {
                     toLonLat(geom.getCoordinates())
                 ) < closestDistance
             ) {
-                console.log("new closest distance found");
                 closestDistance = getDistance(
                     toLonLat(coordinate),
                     toLonLat(geom.getCoordinates())
@@ -164,8 +164,17 @@ const MapComponent = () => {
                 closestFeature = feature;
             }
         });
-        console.log("Closest distance: " + closestDistance);
-        console.log("Closest feature: " + closestFeature);
+
+        if (closestFeature) {
+            closestFeature.setStyle(
+                new Style({
+                    image: new Icon({
+                        src: "ylw-diamond.png", // You can use a custom icon for the closest point
+                        scale: 0.4, // Make the closest point larger or distinct
+                    }),
+                })
+            );
+        }
     };
 
     const handleCheckboxChange = (event) => {
