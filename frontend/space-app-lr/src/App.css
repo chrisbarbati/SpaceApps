@@ -16,6 +16,18 @@
     --font-size-title: 2.5rem; /* 40px */
 }
 
+@media (max-width: 768px) {
+    :root {
+        /* Scaled Down Font Sizes for Mobile */
+        --font-size-small: 0.75rem; /* 12px */
+        --font-size-medium: 0.875rem; /* 14px */
+        --font-size-large: 1rem; /* 16px */
+        --font-size-xlarge: 1.25rem; /* 20px */
+        --font-size-xxlarge: 1.5rem; /* 24px */
+        --font-size-title: 2rem; /* 32px */
+    }
+}
+
 * {
     margin: unset;
     padding: unset;
@@ -87,8 +99,7 @@ form {
     flex-direction: column;
     justify-content: center;
     gap: 15px;
-
-    max-width: 100%;
+    width: 100%;
 }
 
 .form-header {
