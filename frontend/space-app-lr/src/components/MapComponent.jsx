@@ -255,34 +255,36 @@ const MapComponent = () => {
                             />
                         </div>
 
-                        {isNotificationEnabled && (
-                            <>
-                                <label>Email</label>
-                                <input
-                                    id="email-input"
-                                    type="email"
-                                    value={email}
-                                    onChange={(e) => setEmail(e.target.value)}
-                                    required={isNotificationEnabled}
-                                />
-                                <label>Lead Time</label>
-                                <select
-                                    id="lead-time-input"
-                                    value={leadTime}
-                                    onChange={(e) =>
-                                        setLeadTime(e.target.value)
-                                    }
-                                    required={isNotificationEnabled}
-                                    className="styled-select"
-                                >
-                                    <option value="2">2 Hours</option>
-                                    <option value="6">6 Hours</option>
-                                    <option value="12">12 Hours</option>
-                                    <option value="24">24 Hours</option>
-                                </select>
-                            </>
-                        )}
+                        <div
+                            className={`fade ${
+                                isNotificationEnabled ? "show" : ""
+                            }`}
+                        >
+                            <label className="fade-label">Email</label>
+                            <input
+                                id="email-input"
+                                className="fade-input"
+                                type="email"
+                                value={email}
+                                onChange={(e) => setEmail(e.target.value)}
+                                required={isNotificationEnabled}
+                            />
+                            <label className="fade-label">Lead Time</label>
+                            <select
+                                id="lead-time-input"
+                                value={leadTime}
+                                onChange={(e) => setLeadTime(e.target.value)}
+                                required={isNotificationEnabled}
+                                className="styled-select fade-input"
+                            >
+                                <option value="2">2 Hours</option>
+                                <option value="6">6 Hours</option>
+                                <option value="12">12 Hours</option>
+                                <option value="24">24 Hours</option>
+                            </select>
+                        </div>
                     </div>
+
                     <button id="submit" className="mt-4" type="submit">
                         Submit
                     </button>
