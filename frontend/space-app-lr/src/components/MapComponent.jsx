@@ -1,25 +1,36 @@
+// import ol css
+import "ol/ol.css";
+
+//
 import React, { useEffect, useRef, useState } from "react";
 import { Map, View } from "ol";
 import TileLayer from "ol/layer/Tile";
 import OSM from "ol/source/OSM";
-import { fromLonLat, toLonLat } from "ol/proj";
-import Feature from "ol/Feature";
-import Point from "ol/geom/Point";
-import Polygon from "ol/geom/Polygon";
+import { fromLonLat } from "ol/proj";
 import VectorLayer from "ol/layer/Vector";
 import VectorSource from "ol/source/Vector";
 import { Style, Icon, Stroke, Fill } from "ol/style";
 
+// Importing necessary OpenLayers components
+import Feature from "ol/Feature";
+import Point from "ol/geom/Point";
+import Polygon from "ol/geom/Polygon";
+
 const MapComponent = () => {
-    const mapRef = useRef(null); // Reference for the map container
+    // Reference for the map container
+    const mapRef = useRef(null);
+
+    // State to hold the map instance
     const [map, setMap] = useState(null);
+
+    // State to hold coordinates
     const [coordinates, setCoordinates] = useState(null);
 
     useEffect(() => {
         // Scene center coordinates
         const sceneCenter = fromLonLat([-79.457808, 44.593214]);
 
-        // Corner coordinates for the white border
+        // Corner coordinates for the white border, proof of concept for future use to show where the landsat data will sit
         const corners = [
             fromLonLat([-61.99896, 51.35789]), // Upper Left
             fromLonLat([-58.67466, 51.28223]), // Upper Right
