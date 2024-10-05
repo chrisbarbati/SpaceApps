@@ -1,0 +1,7 @@
+org\greenalien\spaceappslr2\mail\MailConfig.class
+org\greenalien\spaceappslr2\mail\EmailSenderService.class
+org\greenalien\spaceappslr2\mongo\Email.class
+org\greenalien\spaceappslr2\SpaceAppsLr2Application.class
+org\greenalien\spaceappslr2\api\ApiEndpoint.class
+org\greenalien\spaceappslr2\mongo\EmailService.class
+org\greenalien\spaceappslr2\mongo\EmailRepository.class
