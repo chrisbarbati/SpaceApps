@@ -203,10 +203,10 @@ const MapComponent = () => {
                     email,
                     leadTime: parseInt(leadTime),
                     boundingBox: {
-                        minLat: 12.44693,
-                        minLng: 10.12345,
-                        maxLat: 15.6789,
-                        maxLng: 14.56789,
+                        LON_UL: 12.44693,
+                        LAT_UR: 10.12345,
+                        LON_UR: 15.6789,
+                        LAT_UL: 14.56789,
                     },
 
                     cloudCoverage,
