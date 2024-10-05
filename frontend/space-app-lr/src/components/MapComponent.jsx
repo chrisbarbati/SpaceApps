@@ -3,6 +3,7 @@ import "ol/ol.css";
 
 //
 import React, { useEffect, useRef, useState } from "react";
+
 import { Map, View } from "ol";
 import TileLayer from "ol/layer/Tile";
 import OSM from "ol/source/OSM";
@@ -119,21 +120,36 @@ const MapComponent = () => {
     return (
         <div id="main-container">
             <div id="sidebar">
-                <h1>Search Location</h1>
-                <p>Or input Lat/Long manually:</p>
-                <input
-                    id="lat-input"
-                    type="number"
-                    step="any"
-                    placeholder="Enter Latitude"
-                />
-                <input
-                    id="lng-input"
-                    type="number"
-                    step="any"
-                    placeholder="Enter Longitude"
-                />
-                <button id="go-to-location">Go to Location</button>
+                <h1 className="text-center">Search Location</h1>
+                <p className="text-center">Or input Lat/Long manually:</p>
+                <form>
+    <label>Latitude</label>
+    <input
+        id="lat-input"
+        type="number"
+        step="any"
+        required
+    />
+    <label>Longitude</label>
+    <input
+        id="lng-input"
+        type="number"
+        step="any"
+        required
+    />
+    <label>Email</label>
+    <input
+        id="email-input"
+        type="email"
+    />
+    <label>Lead Time</label>
+    <input
+        id="lead-time-input"
+        type="number"
+    />
+    <button id="go-to-location" type="submit">Go to Location</button>
+</form>
+            
             </div>
 
             <div id="map-container">
@@ -143,7 +159,7 @@ const MapComponent = () => {
                     style={{ width: "60%", height: "500px" }}
                 ></div>
                 {coordinates && (
-                    <p id="coordinates">
+                    <p id="coordinates" className="pt-2">
                         Coordinates: Latitude: {coordinates.lat}, Longitude:{" "}
                         {coordinates.lng}
                     </p>
