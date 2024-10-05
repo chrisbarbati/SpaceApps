@@ -24,6 +24,7 @@ const MapComponent = () => {
     const [lng, setLng] = useState("");
     const [email, setEmail] = useState("");
     const [leadTime, setLeadTime] = useState("");
+    const [cloudCoverage, setCloudCoverage] = useState(0); // Default to 0
 
     const callApiTest = async () => {
         try {
@@ -164,13 +165,14 @@ const MapComponent = () => {
     const handleCheckboxChange = (event) => {
         setIsNotificationEnabled(event.target.checked);
     };
-
     const handleSubmit = async (event) => {
         event.preventDefault();
+        console.log("Form submitted!");
 
         // Ensure lat and lng are filled
         if (lat && lng) {
-            // Update marker position only (don't submit form)
+            console.log("Latitude and Longitude are filled:", lat, lng);
+
             updateMarkerPosition(
                 fromLonLat([parseFloat(lng), parseFloat(lat)])
             );
@@ -182,32 +184,37 @@ const MapComponent = () => {
                     email: email,
                     leadTime: parseInt(leadTime),
                     boundingBox: 12.44693,
-                    cloudCoverage: 20,
+                    cloudCoverage: cloudCoverage,
                 };
 
+                console.log(
+                    "Form Data before submission:",
+                    JSON.stringify(formData, null, 2)
+                );
+
                 try {
-                    // Send form data as JSON to the backend
                     const response = await axios.post(
                         "http://localhost:8080/api/addEmailNotification",
                         formData,
                         {
                             headers: {
-                                "Content-Type": "application/json", // Set the content type to JSON
+                                "Content-Type": "application/json",
                             },
                         }
                     );
 
-                    // Handle success response
                     console.log("Form submitted successfully:", response.data);
                 } catch (error) {
-                    // Handle error response
                     console.error("Error submitting the form:", error);
+                    if (error.response) {
+                        console.error("Response data:", error.response.data);
+                    }
                 }
-            } else if (!isNotificationEnabled) {
-                console.log("Lat/Lng updated without notifications");
             } else {
                 console.log("Please fill all required fields");
             }
+        } else {
+            console.log("Latitude and Longitude are not filled");
         }
     };
 
@@ -282,6 +289,19 @@ const MapComponent = () => {
                                 <option value="12">12 Hours</option>
                                 <option value="24">24 Hours</option>
                             </select>
+                            <div className="slider-container">
+                                <label>Cloud Coverage: {cloudCoverage}%</label>
+                                <input
+                                    type="range"
+                                    min={0}
+                                    max={100}
+                                    value={cloudCoverage}
+                                    onChange={(e) =>
+                                        setCloudCoverage(Number(e.target.value))
+                                    }
+                                    className="slider"
+                                />
+                            </div>
                         </div>
                     </div>
 

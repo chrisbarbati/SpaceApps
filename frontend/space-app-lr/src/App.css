@@ -179,6 +179,41 @@ input[type="email"]:focus,
     border-color: var(--accent-hover); 
 }
 
+/* Cloud Coverage Slider Styles */
+.slider-container {
+    display: flex;
+    flex-direction: column;
+    width: 100%; /* Full width */
+}
+/* Slider Styles */
+.slider {
+    margin-top: 5px; 
+    appearance: none;
+    height: 5px; 
+    border-radius: 5px; 
+    background: var(--accent); 
+    cursor: pointer;
+}
+
+.slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 15px; 
+    height: 15px; 
+    border-radius: 50%; 
+    background: var(--accent-hover); 
+    cursor: pointer;
+}
+
+.slider::-moz-range-thumb {
+    width: 15px;
+    height: 15px;
+    border-radius: 50%;
+    background: var(--accent-hover);
+    cursor: pointer;
+}
+
+
 /* Form Animations */
 .fade-label,
 .fade-input {
