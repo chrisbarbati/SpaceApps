@@ -24,7 +24,9 @@ const MapComponent = () => {
     const [lat, setLat] = useState("");
     const [lng, setLng] = useState("");
     const [email, setEmail] = useState("");
-    const [leadTime, setLeadTime] = useState("");
+    const [leadTime, setLeadTime] = useState("2"); // Default to 2 Hours
+    const [cloudCoverage, setCloudCoverage] = useState(0); // Default to 0
+    const [formMessage, setFormMessage] = useState(""); // Track form status
 
     const callApiTest = async () => {
         try {
@@ -183,47 +185,68 @@ const MapComponent = () => {
 
     const handleSubmit = async (event) => {
         event.preventDefault();
+        setFormMessage("");
+        console.log("Form submitted!");
 
-        // Ensure lat and lng are filled
-        if (lat && lng) {
-            // Update marker position only (don't submit form)
+        // Logging form data before validation
+        console.log("Latitude: ", lat);
+        console.log("Longitude: ", lng);
+        console.log("Notification enabled: ", isNotificationEnabled);
+        console.log("Email: ", email);
+        console.log("Lead Time: ", leadTime);
+        console.log("Cloud Coverage: ", cloudCoverage);
+
+        // Ensure all fields are filled
+        if (lat && lng && (!isNotificationEnabled || (email && leadTime))) {
+            console.log("All required fields are filled");
+
+            // Only set formSubmitted to true after all checks pass
             updateMarkerPosition(
                 fromLonLat([parseFloat(lng), parseFloat(lat)])
             );
 
-            if (isNotificationEnabled && email && leadTime) {
+            if (isNotificationEnabled) {
                 const formData = {
-                    lat: parseFloat(lat),
-                    lng: parseFloat(lng),
-                    email: email,
+                    // lat: parseFloat(lat),
+                    // lng: parseFloat(lng),
+                    email,
                     leadTime: parseInt(leadTime),
-                    boundingBox: 12.44693,
-                    cloudCoverage: 20,
+                    boundingBox: {
+                        LON_UL: 12.44693,
+                        LAT_UR: 10.12345,
+                        LON_UR: 15.6789,
+                        LAT_UL: 14.56789,
+                    },
+
+                    cloudCoverage,
                 };
 
+                console.log(
+                    "Form Data before submission:",
+                    JSON.stringify(formData, null, 2)
+                );
+
                 try {
-                    // Send form data as JSON to the backend
                     const response = await axios.post(
                         "http://localhost:8080/api/addEmailNotification",
                         formData,
-                        {
-                            headers: {
-                                "Content-Type": "application/json", // Set the content type to JSON
-                            },
-                        }
+                        { headers: { "Content-Type": "application/json" } }
                     );
-
-                    // Handle success response
                     console.log("Form submitted successfully:", response.data);
+
+                    // Set formSubmitted to true only here when the submission succeeds
+                    setFormSubmitted(true);
+                    setFormMessage("Form submitted successfully!");
                 } catch (error) {
-                    // Handle error response
                     console.error("Error submitting the form:", error);
+                    setFormMessage("Form submission failed. Please try again.");
                 }
-            } else if (!isNotificationEnabled) {
-                console.log("Lat/Lng updated without notifications");
             } else {
-                console.log("Please fill all required fields");
+                setFormMessage("Form submitted without notifications.");
             }
+        } else {
+            console.log("Please fill all required fields");
+            setFormMessage("Please fill all required fields.");
         }
     };
 
@@ -298,6 +321,19 @@ const MapComponent = () => {
                                 <option value="12">12 Hours</option>
                                 <option value="24">24 Hours</option>
                             </select>
+                            <div className="slider-container">
+                                <label>Cloud Coverage: {cloudCoverage}%</label>
+                                <input
+                                    type="range"
+                                    min={0}
+                                    max={100}
+                                    value={cloudCoverage}
+                                    onChange={(e) =>
+                                        setCloudCoverage(Number(e.target.value))
+                                    }
+                                    className="slider"
+                                />
+                            </div>
                         </div>
                     </div>
 
@@ -305,6 +341,7 @@ const MapComponent = () => {
                         Submit
                     </button>
                 </form>
+                <p className="form-message">{formMessage}</p>
             </div>
 
             <div id="map-container">

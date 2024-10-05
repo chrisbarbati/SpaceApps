@@ -22,7 +22,7 @@ public class ApiEndpoint {
 
     @Autowired
     private EmailSenderService emailSenderService;
- 
+
     @GetMapping("/test")
     @CrossOrigin
     public void test() {
