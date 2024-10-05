@@ -7,7 +7,6 @@ import { Style, Icon, Stroke, Fill } from "ol/style";
 import { getDistance } from "ol/sphere";
 import TileLayer from "ol/layer/Tile";
 import OSM from "ol/source/OSM";
-import { fromLonLat, toLonLat } from "ol/proj";
 import VectorLayer from "ol/layer/Vector";
 import VectorSource from "ol/source/Vector";
 import Feature from "ol/Feature";
@@ -122,8 +121,14 @@ const MapComponent = () => {
             markerRef.current.getGeometry().setCoordinates(coordinate);
         }
 
-        const [lng, lat] = toLonLat(coordinate);
-        setCoordinates({ lat: lat.toFixed(6), lng: lng.toFixed(6) });
+        const [lngValue, latValue] = toLonLat(coordinate);
+        setCoordinates({ lat: latValue.toFixed(6), lng: lngValue.toFixed(6) });
+
+        // Update the form inputs with new values
+        setLat(latValue.toFixed(6));
+        setLng(lngValue.toFixed(6));
+
+        // Call displayClosestKmlPoint to update the closest KML point
         displayClosestKmlPoint(coordinate);
     };
 
@@ -160,17 +165,44 @@ const MapComponent = () => {
         setIsNotificationEnabled(event.target.checked);
     };
 
-    const handleSubmit = (event) => {
+    const handleSubmit = async (event) => {
         event.preventDefault();
+
+        // Ensure lat and lng are filled
         if (lat && lng) {
             // Update marker position only (don't submit form)
             updateMarkerPosition(
                 fromLonLat([parseFloat(lng), parseFloat(lat)])
             );
-            if (isNotificationEnabled && email && leadTime) {
-                // Proceed with form submission and API call when notifications are enabled
 
-                console.log("Form submitted with notification details");
+            if (isNotificationEnabled && email && leadTime) {
+                // Create a data object with the form inputs
+                const formData = {
+                    lat: parseFloat(lat),
+                    lng: parseFloat(lng),
+                    email: email,
+                    leadTime: parseInt(leadTime),
+                    notificationEnabled: isNotificationEnabled,
+                };
+
+                try {
+                    // Send form data as JSON to the backend
+                    const response = await axios.post(
+                        "http://localhost:8080/api/submit",
+                        formData,
+                        {
+                            headers: {
+                                "Content-Type": "application/json", // Set the content type to JSON
+                            },
+                        }
+                    );
+
+                    // Handle success response
+                    console.log("Form submitted successfully:", response.data);
+                } catch (error) {
+                    // Handle error response
+                    console.error("Error submitting the form:", error);
+                }
             } else if (!isNotificationEnabled) {
                 console.log("Lat/Lng updated without notifications");
             } else {
@@ -264,12 +296,6 @@ const MapComponent = () => {
                         boxShadow: "0 4px 20px rgba(0, 0, 0, 0.5)",
                     }}
                 ></div>
-                {coordinates && (
-                    <p id="coordinates" className="pt-2">
-                        Coordinates: Latitude: {coordinates.lat}, Longitude:{" "}
-                        {coordinates.lng}
-                    </p>
-                )}
             </div>
         </div>
     );
