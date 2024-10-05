@@ -176,7 +176,6 @@ const MapComponent = () => {
             );
 
             if (isNotificationEnabled && email && leadTime) {
-                // Create a data object with the form inputs
                 const formData = {
                     lat: parseFloat(lat),
                     lng: parseFloat(lng),
@@ -267,15 +266,20 @@ const MapComponent = () => {
                                     required={isNotificationEnabled}
                                 />
                                 <label>Lead Time</label>
-                                <input
+                                <select
                                     id="lead-time-input"
-                                    type="number"
                                     value={leadTime}
                                     onChange={(e) =>
                                         setLeadTime(e.target.value)
                                     }
                                     required={isNotificationEnabled}
-                                />
+                                    className="styled-select"
+                                >
+                                    <option value="2">2 Hours</option>
+                                    <option value="6">6 Hours</option>
+                                    <option value="12">12 Hours</option>
+                                    <option value="24">24 Hours</option>
+                                </select>
                             </>
                         )}
                     </div>

@@ -5,20 +5,22 @@
     --text-color: #eceff4;
     --accent: #5e81ac;
     --accent-hover: #5d88bc;
+    --black: #0c0b0b;
 
-      /* Font Sizes */
-      --font-size-small: 0.875rem; /* 14px */
-      --font-size-medium: 1rem; /* 16px */
-      --font-size-large: 1.25rem; /* 20px */
-      --font-size-xlarge: 1.5rem; /* 24px */
-      --font-size-xxlarge: 2rem; /* 32px */
-      --font-size-title: 2.5rem; /* 40px */
+    /* Font Sizes */
+    --font-size-small: 0.875rem; /* 14px */
+    --font-size-medium: 1rem; /* 16px */
+    --font-size-large: 1.25rem; /* 20px */
+    --font-size-xlarge: 1.5rem; /* 24px */
+    --font-size-xxlarge: 2rem; /* 32px */
+    --font-size-title: 2.5rem; /* 40px */
 }
 *{
     margin: unset;
     padding: unset;
     box-sizing: border-box;
     scroll-behavior: smooth;
+    font-family: Arial, Helvetica, sans-serif;
 }
 body{
     color: var(--text-color)
@@ -71,7 +73,6 @@ p {
     justify-content: center;
     align-items: center;
 }
-
 
 /* Form Styles */
 form {
@@ -131,6 +132,7 @@ button:hover {
     gap: 15px;
     width: 100%;
 }
+
 /*Form Animations*/
 .fade-label,
 .fade-input {
@@ -148,4 +150,38 @@ button:hover {
     opacity: 0; 
     height: 0; 
     overflow: hidden; 
+}
+
+.styled-select {
+    width: 100%;
+    padding: 10px;
+    font-size: 1rem;
+    color: var(--text-color); 
+    background-color: var(--foreground-color); 
+    border: 2px solid var(--accent);
+    border-radius: 8px; 
+    appearance: none;
+    -webkit-appearance: none; 
+    -moz-appearance: none; 
+    cursor: pointer;
+    outline: none;
+}
+
+.styled-select::after {
+    content: '▼';
+    position: absolute;
+    right: 15px;
+    top: 15px;
+    font-size: 12px;
+    color: var(--text-color);
+}
+
+.styled-select option {
+    background-color: var(--bg-color); 
+    color: var(--text-color); 
+    padding: 10px;
+}
+
+.styled-select:focus {
+    border-color: var(--accent-hover); 
 }
