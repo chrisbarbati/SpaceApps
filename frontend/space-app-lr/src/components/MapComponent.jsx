@@ -17,6 +17,7 @@ import KML from "ol/format/KML";
 const MapComponent = () => {
     const mapRef = useRef(null);
     const markerRef = useRef(null);
+    const kmlLayerRef = useRef(null); // Ref to hold the KML layer
     const [map, setMap] = useState(null);
     const [coordinates, setCoordinates] = useState(null);
     const [isNotificationEnabled, setIsNotificationEnabled] = useState(false);
@@ -91,6 +92,8 @@ const MapComponent = () => {
             }),
         });
 
+        kmlLayerRef.current = kmlLayer;
+
         const initialMap = new Map({
             target: mapRef.current,
             layers: [
@@ -133,32 +136,36 @@ const MapComponent = () => {
     };
 
     const displayClosestKmlPoint = (coordinate) => {
-        console.log("1");
-        if (!kmlLayer) return;
-        console.log("2");
+        if (!kmlLayerRef.current) return; // if kml layer is loaded
 
+        const kmlFeatures = kmlLayerRef.current.getSource().getFeatures(); // Get KML features
         let closestFeature = null;
-        let minDistance = Infinity;
+        let closestDistance = Infinity;
 
-        kmlLayer.forEachFeature((feature) => {
-            const featureCoord = feature.getGeometry().getCoordinates();
-            const distance = getDistance(coordinate, featureCoord);
-            console.log("thing running");
-            if (distance < minDistance) {
-                minDistance = distance;
-                closestFeature = feature;
-                console.log("closest found");
-            }
+        kmlFeatures.forEach((feature) => {
+            feature.setStyle(null); // This hides the feature by setting style to null
         });
 
-        if (closestFeature) {
-            // Optionally, adjust styling of the closest feature here if needed
-            console.log("Closest KML feature:", closestFeature);
-
-            // Clear existing KML features and add only the closest one
-            kmlLayer.clear();
-            kmlLayer.addFeature(closestFeature);
-        }
+        console.log(coordinate);
+        console.log(toLonLat(coordinate));
+        kmlFeatures.forEach((feature) => {
+            const geom = feature.getGeometry();
+            if (
+                getDistance(
+                    toLonLat(coordinate),
+                    toLonLat(geom.getCoordinates())
+                ) < closestDistance
+            ) {
+                console.log("new closest distance found");
+                closestDistance = getDistance(
+                    toLonLat(coordinate),
+                    toLonLat(geom.getCoordinates())
+                );
+                closestFeature = feature;
+            }
+        });
+        console.log("Closest distance: " + closestDistance);
+        console.log("Closest feature: " + closestFeature);
     };
 
     const handleCheckboxChange = (event) => {
