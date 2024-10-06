@@ -124,20 +124,23 @@ function Bands({ coordinates, boundingBoxCoordinates }) {
             );
             setimageResponse(imageResponse);
         } else if (imageSize === "full") {
-            // const imageResponse = await axios.get(
-            //     "http://localhost:8080/api/landsatImage",
-            //     {
-            //         params: {
-            //             //boundingBoxCoordinates: boundingBoxCoordinates,
-            //             startDate: startDate,
-            //             endDate: endDate,
-            //             //imageSize: imageSize,
-            //             cloudCoverage: cloudCoverage,
-            //         },
-            //         headers: { "Content-Type": "image/png" },
-            //     }
-            // );
-            // setimageResponse(imageResponse);
+            const imageResponse = await axios.get(
+                "http://localhost:8080/api/landsatImage",
+                {
+                    params: {
+                        LON_UL: 44,
+                        LAT_UR: 32,
+                        LON_UR: 46,
+                        LAT_UL: 33,
+                        startDate: startDate,
+                        endDate: endDate,
+                        bands: "B01,B02,B03,B04,B05",
+                        cloudCoverage: cloudCoverage,
+                    },
+                    headers: { "Content-Type": "image/png" },
+                }
+            );
+            setimageResponse(imageResponse);
         }
         const dataResponse = await axios.get(
             // "http://localhost:8080/api/landsatData",
