@@ -14,30 +14,19 @@ function LandingPage() {
             </div>
             <div className="landing-highlights">
                 <article className="highlight">
-                    <h2>Real-Time Satellite Overpass Notifications</h2>
+                    <h2>1</h2>
                     <p>
-                        Stay informed with timely alerts about upcoming Landsat
-                        satellite overpasses at your defined locations,
-                        empowering you to capture crucial data for your research
-                        or projects.
+                        Select a location by entering a name or clicking on the
+                        map.
                     </p>
                 </article>
                 <article className="highlight">
-                    <h2>Interactive Map and Data Visualization</h2>
-                    <p>
-                        Easily visualize satellite data on an interactive map.
-                        Compare Landsat Surface Reflectance data with
-                        ground-based observations to enhance your understanding
-                        of environmental changes.
-                    </p>
+                    <h2>2</h2>
+                    <p>Customize your data by selecting bands.</p>
                 </article>
                 <article className="highlight">
-                    <h2>Download and Share Valuable Insights</h2>
-                    <p>
-                        Download detailed Landsat data and share your findings
-                        with the community. Collaborate and engage with fellow
-                        users to deepen your exploration of Earth's landscapes.
-                    </p>
+                    <h2>3</h2>
+                    <p>View your results.</p>
                 </article>
             </div>
         </section>
