@@ -13,17 +13,19 @@ import Feature from "ol/Feature";
 import Point from "ol/geom/Point";
 import Polygon from "ol/geom/Polygon";
 import KML from "ol/format/KML";
+import { buffer as bufferExtent } from "ol/extent";
 
 import ImageComponent from "./Image";
 import Bands from "./Bands";
 
 const MapComponent = () => {
+    // map is used to store the reference to the map object
+    // mapRef is used to store the reference to the map container
+    const map = useRef(null);
     const mapRef = useRef(null);
     const markerRef = useRef(null);
     const kmlLayerRef = useRef(null);
-    const closestMarkerLayerRef = useRef(null);
     const borderLayerRef = useRef(null);
-    const [map, setMap] = useState(null);
     const [coordinates, setCoordinates] = useState(null);
     const [isNotificationEnabled, setIsNotificationEnabled] = useState(false);
     const [lat, setLat] = useState("");
@@ -67,6 +69,7 @@ const MapComponent = () => {
     };
 
     useEffect(() => {
+        if (!mapRef.current) return;
         const sceneCenter = fromLonLat([-79.457808, 44.593214]);
 
         const markerFeature = new Feature({
@@ -110,7 +113,7 @@ const MapComponent = () => {
                     width: 2,
                 }),
                 fill: new Fill({
-                    color: "rgba(255, 255, 255, 0.1)",
+                    color: "rgba(255, 255, 255, 0.3)",
                 }),
             }),
         });
@@ -137,9 +140,11 @@ const MapComponent = () => {
             updateMarkerPosition(coordinate);
         });
 
-        setMap(initialMap);
+        map.current = initialMap;
 
-        return () => initialMap.setTarget(null);
+        return () => {
+            if (map.current) map.current.setTarget(null);
+        };
     }, []);
 
     const updateMarkerPosition = (coordinate) => {
@@ -214,6 +219,16 @@ const MapComponent = () => {
             // Clear previous border and add new one
             borderLayerRef.current.getSource().clear();
             borderLayerRef.current.getSource().addFeature(borderPolygon);
+
+            const extent = containingFeature.getGeometry().getExtent();
+            //const bufferedExtent = bufferExtent(extent, extent[2] - extent[0]);
+            setTimeout(() => {
+                // change extent to bufferedExtent to zoom out a lot more, maybe for 3x3?
+                map.current.getView().fit(extent, {
+                    padding: [100, 100, 100, 100],
+                    duration: 1000, // Animate over 1 second
+                });
+            }, 0);
         }
     };
 
