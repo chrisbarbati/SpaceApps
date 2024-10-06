@@ -4,7 +4,6 @@ import axios from "axios";
 import { Map, View } from "ol";
 import { fromLonLat, toLonLat } from "ol/proj";
 import { Style, Icon, Stroke, Fill } from "ol/style";
-import { getDistance } from "ol/sphere";
 import TileLayer from "ol/layer/Tile";
 import OSM from "ol/source/OSM";
 import VectorLayer from "ol/layer/Vector";
@@ -17,6 +16,7 @@ import { buffer as bufferExtent } from "ol/extent";
 
 import ImageComponent from "./Image";
 import Bands from "./Bands";
+import Analysis from "./Analysis";
 
 const MapComponent = () => {
     // map is used to store the reference to the map object
@@ -27,6 +27,8 @@ const MapComponent = () => {
     const kmlLayerRef = useRef(null);
     const borderLayerRef = useRef(null);
     const searchBoxRef = useRef(null);
+    const [isAnalysisVisible, setIsAnalysisVisible] = useState(false);
+    const [data, setData] = useState(false);
     const [coordinates, setCoordinates] = useState(null);
     const [isNotificationEnabled, setIsNotificationEnabled] = useState(false);
     const [lat, setLat] = useState("");
@@ -39,31 +41,16 @@ const MapComponent = () => {
     const getLandsetData = async () => {
         try {
             console.log("Fetching landsat data...");
-            const response = await axios.get(
-                "http://localhost:8080/api/getLandsetData"
-            );
-
-            if (response.data) {
-                // Destructuring the response data to extract needed properties
-                const { cloudCoverage, boundingBox, name, bands } =
-                    response.data;
-                const { minLat, minLng, maxLat, maxLng } = boundingBox;
-                // Logging the values
-                console.log("Cloud Coverage:", cloudCoverage);
-                console.log("Bounding Box:", {
-                    minLat,
-                    minLng,
-                    maxLat,
-                    maxLng,
-                });
-                console.log("Name:", name);
-
-                return {
-                    cloudCoverage,
-                    boundingBox: [minLat, minLng, maxLat, maxLng], // Returning as an array
-                    name,
-                };
+            // const response = await axios.get(
+            //     "http://localhost:8080/api/landsatData"
+            // );
+            const response = await fetch("/example.json"); // Adjust the filename as needed
+            if (!response.ok) {
+                throw new Error("Network response was not ok");
             }
+            const jsonData = await response.json();
+            setData(jsonData);
+            return jsonData;
         } catch (error) {
             console.log("Failed to fetch landset data", error);
         }
@@ -337,6 +324,9 @@ const MapComponent = () => {
             console.log("Fetching landsat data...");
             const landsatData = await getLandsetData();
             console.log("Landsat Data:", landsatData);
+            if (landsatData) {
+                setIsAnalysisVisible(true); // Update the state to show analysis
+            }
         } else {
             console.log("Please fill all required fields");
             setFormMessage("Please fill all required fields.");
@@ -499,6 +489,7 @@ const MapComponent = () => {
                     ></div>
                     <ImageComponent />
                     <Bands />
+                    {isAnalysisVisible && <Analysis data={data} />}
                 </div>
             </div>
         </>

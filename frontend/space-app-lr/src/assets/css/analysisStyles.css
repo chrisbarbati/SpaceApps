@@ -51,8 +51,7 @@
 
 .chart-grid {
     display: grid;
-    grid-template-columns: repeat(3, 1fr); /* 3 columns */
-    grid-template-rows: repeat(3, 1fr);    /* 3 rows */
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
     grid-gap: 20px;
     width: 100%;
     max-width: 1200px;
@@ -60,12 +59,12 @@
 }
 
 .chart {
-    background-color: var(--chart-color);
-    border: 1px solid #ccc;
-    padding: 20px;
+    height: 80%;
+}
+
+.band-scatter-plot h2 {
+    color: var(--text-color);
+    font-size: var(--font-size-xlarge);
+    margin-bottom: 20px;
     text-align: center;
-    height: 200px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
 }
