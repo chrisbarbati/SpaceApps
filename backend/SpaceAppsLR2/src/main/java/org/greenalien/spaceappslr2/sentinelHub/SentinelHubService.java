@@ -82,7 +82,6 @@ public class SentinelHubService {
 
     public SentinelHubService() {
         this.oauth2Token = getOAuth2Token();
-        logger.info("OAuth2 token: " + this.oauth2Token);
     }
 
     /**

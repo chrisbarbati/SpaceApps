@@ -10,6 +10,7 @@ import org.apache.hc.core5.http.HttpEntity;
 import org.apache.hc.core5.http.io.entity.EntityUtils;
 import org.apache.hc.core5.http.io.entity.StringEntity;
 import org.apache.logging.log4j.*;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 /**
@@ -21,13 +22,17 @@ public class OAuth2TokenService {
     //Logging
     private static final Logger logger = LogManager.getLogger(OAuth2TokenService.class);
 
+    //Inject the ClientID and ClientSecret here from the application.properties file
+    @Value("${sentinelHub.clientID}")
+    private String clientID;
+
+    @Value("${sentinelHub.clientSecret}")
+    private String clientSecret;
+
     public String getOAuth2Token() {
         String token = null;
 
         String requestURL = "https://services.sentinel-hub.com/auth/realms/main/protocol/openid-connect/token";
-
-        String clientID = "218715cf-e392-4500-9ddf-81b5bc32b0f8";
-        String clientSecret = "c8VIYSpRdxHdUfaGcLcFDpbnyrk6OA1I";
 
         String body = "grant_type=client_credentials&client_id=" + clientID + "&client_secret=" + clientSecret;
 
