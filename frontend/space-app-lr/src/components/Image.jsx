@@ -8,10 +8,11 @@ const ImageComponent = () => {
     const fetchImage = async () => {
         try {
             const response = await axios.get(
-                "http://localhost:8080/api/LandsatImage",
+                "http://localhost:8080/api/landsatImage",
                 {
                     headers: { "Content-Type": "application/json" },
                     responseType: "arraybuffer",
+                    withCredentials: true,
                 }
             );
             const blob = new Blob([response.data], { type: "image/png" });
