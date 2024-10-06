@@ -21,6 +21,7 @@ const MapComponent = () => {
     const markerRef = useRef(null);
     const kmlLayerRef = useRef(null);
     const closestMarkerLayerRef = useRef(null);
+    const borderLayerRef = useRef(null);
     const [map, setMap] = useState(null);
     const [coordinates, setCoordinates] = useState(null);
     const [isNotificationEnabled, setIsNotificationEnabled] = useState(false);
@@ -105,6 +106,21 @@ const MapComponent = () => {
         });
         closestMarkerLayerRef.current = closestMarkerLayer;
 
+        const borderSource = new VectorSource();
+        const borderLayer = new VectorLayer({
+            source: borderSource,
+            style: new Style({
+                stroke: new Stroke({
+                    color: "white",
+                    width: 2,
+                }),
+                fill: new Fill({
+                    color: "rgba(255, 255, 255, 0.1)",
+                }),
+            }),
+        });
+        borderLayerRef.current = borderLayer;
+
         const initialMap = new Map({
             target: mapRef.current,
             layers: [
@@ -114,6 +130,7 @@ const MapComponent = () => {
                 vectorLayer,
                 kmlLayer,
                 closestMarkerLayer,
+                borderLayer,
             ],
             view: new View({
                 center: sceneCenter,
@@ -174,15 +191,14 @@ const MapComponent = () => {
         });
 
         if (closestFeature) {
-            const closestFeatureCoord = [
-                closestFeature.getGeometry().flatCoordinates[0],
-                closestFeature.getGeometry().flatCoordinates[1],
-            ];
+            const coords = closestFeature.getGeometry().flatCoordinates;
+            console.log(coords);
 
+            // ----------------- Drawing the marker ----------------- \\
             closestMarkerLayerRef.current.getSource().clear();
 
             const marker = new Feature({
-                geometry: new Point(closestFeatureCoord),
+                geometry: new Point([coords[0], coords[1]]),
             });
 
             marker.setStyle(
@@ -195,6 +211,23 @@ const MapComponent = () => {
             );
 
             closestMarkerLayerRef.current.getSource().addFeature(marker);
+
+            // ----------------- Drawing the Border ----------------- \\
+            const polygonCoords = [
+                [coords[3], coords[4]],
+                [coords[6], coords[7]],
+                [coords[9], coords[10]],
+                [coords[12], coords[13]],
+                [coords[3], coords[4]],
+            ];
+
+            const borderPolygon = new Feature({
+                geometry: new Polygon([polygonCoords]),
+            });
+
+            // Clear previous border and add new one
+            borderLayerRef.current.getSource().clear();
+            borderLayerRef.current.getSource().addFeature(borderPolygon);
         }
     };
 
