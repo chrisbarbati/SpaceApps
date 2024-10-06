@@ -12,6 +12,7 @@ import {
 /**Views**/
 import LandingPage from "./components/Landing";
 import MapComponent from "./components/MapComponent";
+import Analysis from "./components/Analysis";
 
 function App() {
     const [count, setCount] = useState(0);
@@ -20,6 +21,7 @@ function App() {
         <main>
             <LandingPage />
             <MapComponent />
+            <Analysis />
         </main>
     );
 }
