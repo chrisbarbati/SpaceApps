@@ -14,6 +14,8 @@ import Point from "ol/geom/Point";
 import Polygon from "ol/geom/Polygon";
 import KML from "ol/format/KML";
 
+import ImageComponent from "./Image";
+
 const MapComponent = () => {
     const mapRef = useRef(null);
     const markerRef = useRef(null);
@@ -37,10 +39,9 @@ const MapComponent = () => {
 
             if (response.data) {
                 // Destructuring the response data to extract needed properties
-                const { cloudCoverage, boundingBox, name } = response.data;
-                ß;
+                const { cloudCoverage, boundingBox, name, bands } =
+                    response.data;
                 const { minLat, minLng, maxLat, maxLng } = boundingBox;
-
                 // Logging the values
                 console.log("Cloud Coverage:", cloudCoverage);
                 console.log("Bounding Box:", {
