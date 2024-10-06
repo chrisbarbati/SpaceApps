@@ -1,6 +1,5 @@
 import "ol/ol.css";
 import React, { useEffect, useRef, useState } from "react";
-import axios from "axios";
 import { Map, View } from "ol";
 import { fromLonLat, toLonLat } from "ol/proj";
 import { Style, Icon, Stroke, Fill } from "ol/style";
@@ -14,7 +13,6 @@ import Polygon from "ol/geom/Polygon";
 import KML from "ol/format/KML";
 import { buffer as bufferExtent } from "ol/extent";
 
-import ImageComponent from "./Image";
 import Bands from "./Bands";
 import Analysis from "./Analysis";
 
@@ -28,30 +26,10 @@ const MapComponent = () => {
     const borderLayerRef = useRef(null);
     const searchBoxRef = useRef(null);
     const [boundingBox, setBoundingBox] = useState(null);
-    const [isAnalysisVisible, setIsAnalysisVisible] = useState(false);
-    const [data, setData] = useState(false);
     const [coordinates, setCoordinates] = useState(null);
     const [isNotificationEnabled, setIsNotificationEnabled] = useState(false);
     const [lat, setLat] = useState("");
     const [lng, setLng] = useState("");
-
-    const getLandsetData = async () => {
-        try {
-            console.log("Fetching landsat data...");
-            // const response = await axios.get(
-            //     "http://localhost:8080/api/landsatData"
-            // );
-            const response = await fetch("/example.json"); // Adjust the filename as needed
-            if (!response.ok) {
-                throw new Error("Network response was not ok");
-            }
-            const jsonData = await response.json();
-            setData(jsonData);
-            return jsonData;
-        } catch (error) {
-            console.log("Failed to fetch landset data", error);
-        }
-    };
 
     useEffect(() => {
         if (!mapRef.current) return;
@@ -275,10 +253,6 @@ const MapComponent = () => {
         if (element) {
             element.scrollIntoView();
         }
-        console.log("Fetching landsat data...");
-        const landsatData = await getLandsetData();
-        console.log("Landsat Data:", landsatData);
-        setIsAnalysisVisible(true);
     };
 
     const handleUseCurrentLocation = () => {
@@ -381,7 +355,6 @@ const MapComponent = () => {
                     boundingBoxCoordinates={boundingBox}
                 />
             </div>
-            {isAnalysisVisible && <Analysis data={data} />}
         </>
     );
 };
