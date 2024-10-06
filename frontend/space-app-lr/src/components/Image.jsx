@@ -10,6 +10,7 @@ const ImageComponent = () => {
             const response = await axios.get(
                 "http://localhost:8080/api/LandsatImage",
                 {
+                    headers: { "Content-Type": "application/json" },
                     responseType: "arraybuffer",
                 }
             );

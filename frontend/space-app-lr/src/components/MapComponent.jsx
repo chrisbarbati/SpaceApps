@@ -276,114 +276,131 @@ const MapComponent = () => {
     };
 
     return (
-        <div id="main-container">
-            <div id="sidebar">
-                <div className="form-header">
-                    <h1 className="text-center pt-4">Search Location</h1>
-                    <input
-                        id="search-box"
-                        type="text"
-                        placeholder="Search by Name..."
-                        className="mb-2"
-                    />
-                    <p className="text-center">Or input Lat/Long manually:</p>
-                </div>
-
-                <form onSubmit={handleSubmit}>
-                    <label>Latitude</label>
-                    <input
-                        id="lat-input"
-                        type="number"
-                        step="any"
-                        value={lat}
-                        onChange={(e) => setLat(e.target.value)}
-                        required
-                    />
-                    <label>Longitude</label>
-                    <input
-                        id="lng-input"
-                        type="number"
-                        step="any"
-                        value={lng}
-                        onChange={(e) => setLng(e.target.value)}
-                        required
-                    />
-                    <div className="email-container">
-                        <div className="notify-checkbox">
-                            <label className="me-2">
-                                Receive a notification for selected location?
-                            </label>
-                            <input
-                                type="checkbox"
-                                onChange={handleCheckboxChange}
-                            />
-                        </div>
-
-                        <div
-                            className={`fade ${
-                                isNotificationEnabled ? "show" : ""
-                            }`}
-                        >
-                            <label className="fade-label">Email</label>
-                            <input
-                                id="email-input"
-                                className="fade-input"
-                                type="email"
-                                value={email}
-                                onChange={(e) => setEmail(e.target.value)}
-                                required={isNotificationEnabled}
-                            />
-                            <label className="fade-label">Lead Time</label>
-                            <select
-                                id="lead-time-input"
-                                value={leadTime}
-                                onChange={(e) => setLeadTime(e.target.value)}
-                                required={isNotificationEnabled}
-                                className="styled-select fade-input"
-                            >
-                                <option value="2">2 Hours</option>
-                                <option value="6">6 Hours</option>
-                                <option value="12">12 Hours</option>
-                                <option value="24">24 Hours</option>
-                            </select>
-                            <div className="slider-container">
-                                <label>Cloud Coverage: {cloudCoverage}%</label>
-                                <input
-                                    type="range"
-                                    min={0}
-                                    max={100}
-                                    value={cloudCoverage}
-                                    onChange={(e) =>
-                                        setCloudCoverage(Number(e.target.value))
-                                    }
-                                    className="slider"
-                                />
-                            </div>
-                        </div>
+        <>
+            <div id="main-container">
+                <div id="sidebar">
+                    <div className="form-header">
+                        <h1 className="text-center pt-4">Search Location</h1>
+                        <input
+                            id="search-box"
+                            type="text"
+                            placeholder="Search by Name..."
+                            className="mb-2"
+                        />
+                        <p className="text-center">
+                            Or input Lat/Long manually:
+                        </p>
                     </div>
 
-                    <button id="submit" className="mtt-4 mt-4" type="submit">
-                        Submit
-                    </button>
-                </form>
-                <p className="form-message mt-2 text-center">{formMessage}</p>
-            </div>
+                    <form onSubmit={handleSubmit}>
+                        <label>Latitude</label>
+                        <input
+                            id="lat-input"
+                            type="number"
+                            step="any"
+                            value={lat}
+                            onChange={(e) => setLat(e.target.value)}
+                            required
+                        />
+                        <label>Longitude</label>
+                        <input
+                            id="lng-input"
+                            type="number"
+                            step="any"
+                            value={lng}
+                            onChange={(e) => setLng(e.target.value)}
+                            required
+                        />
+                        <div className="email-container">
+                            <div className="notify-checkbox">
+                                <label className="me-2">
+                                    Receive a notification for selected
+                                    location?
+                                </label>
+                                <input
+                                    type="checkbox"
+                                    onChange={handleCheckboxChange}
+                                />
+                            </div>
 
-            <div id="map-container">
-                <div
-                    ref={mapRef}
-                    id="map"
-                    style={{
-                        width: "100%",
-                        maxWidth: "1200px",
-                        height: "600px",
-                        border: "2px solid white",
-                        boxShadow: "0 4px 20px rgba(0, 0, 0, 0.5)",
-                    }}
-                ></div>
+                            <div
+                                className={`fade ${
+                                    isNotificationEnabled ? "show" : ""
+                                }`}
+                            >
+                                <label className="fade-label">Email</label>
+                                <input
+                                    id="email-input"
+                                    className="fade-input"
+                                    type="email"
+                                    value={email}
+                                    onChange={(e) => setEmail(e.target.value)}
+                                    required={isNotificationEnabled}
+                                />
+                                <label className="fade-label">Lead Time</label>
+                                <select
+                                    id="lead-time-input"
+                                    value={leadTime}
+                                    onChange={(e) =>
+                                        setLeadTime(e.target.value)
+                                    }
+                                    required={isNotificationEnabled}
+                                    className="styled-select fade-input"
+                                >
+                                    <option value="2">2 Hours</option>
+                                    <option value="6">6 Hours</option>
+                                    <option value="12">12 Hours</option>
+                                    <option value="24">24 Hours</option>
+                                </select>
+                                <div className="slider-container">
+                                    <label>
+                                        Cloud Coverage: {cloudCoverage}%
+                                    </label>
+                                    <input
+                                        type="range"
+                                        min={0}
+                                        max={100}
+                                        value={cloudCoverage}
+                                        onChange={(e) =>
+                                            setCloudCoverage(
+                                                Number(e.target.value)
+                                            )
+                                        }
+                                        className="slider"
+                                    />
+                                </div>
+                            </div>
+                        </div>
+
+                        <button
+                            id="submit"
+                            className="mtt-4 mt-4"
+                            type="submit"
+                        >
+                            Submit
+                        </button>
+                    </form>
+                    <p className="form-message mt-2 text-center">
+                        {formMessage}
+                    </p>
+                </div>
+
+                <div id="map-container">
+                    <div
+                        ref={mapRef}
+                        id="map"
+                        style={{
+                            width: "100%",
+                            maxWidth: "1200px",
+                            height: "600px",
+                            border: "2px solid white",
+                            boxShadow: "0 4px 20px rgba(0, 0, 0, 0.5)",
+                        }}
+                    ></div>
+                </div>
             </div>
             <ImageComponent />
-        </div>
+        </>
     );
 };
 
