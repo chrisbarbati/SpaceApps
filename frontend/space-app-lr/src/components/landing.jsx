@@ -7,8 +7,7 @@ function LandingPage() {
             <div className="landing-header">
                 <h1 className="text-center pt-4">Space Apps Challenge 2024</h1>
                 <p className="text-center subtitle">
-                    Explore Earth from Space: Compare Ground-Based Observations
-                    with Landsat Data
+                Landsat Reflectance Data: On the Fly and at Your Fingertips
                 </p>
                 <button className="primary-button">Get Started</button>
             </div>
