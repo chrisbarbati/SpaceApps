@@ -101,12 +101,6 @@ const MapComponent = () => {
 
         kmlLayerRef.current = kmlLayer;
 
-        const closestMarkerSource = new VectorSource();
-        const closestMarkerLayer = new VectorLayer({
-            source: closestMarkerSource,
-        });
-        closestMarkerLayerRef.current = closestMarkerLayer;
-
         const borderSource = new VectorSource();
         const borderLayer = new VectorLayer({
             source: borderSource,
@@ -130,7 +124,6 @@ const MapComponent = () => {
                 }),
                 vectorLayer,
                 kmlLayer,
-                closestMarkerLayer,
                 borderLayer,
             ],
             view: new View({
@@ -163,55 +156,47 @@ const MapComponent = () => {
         displayClosestKmlPoint(coordinate);
     };
 
+    const isPointInPolygon = (point, polygon) => {
+        const x = point[0],
+            y = point[1];
+        let inside = false;
+        for (let i = 0, j = polygon.length - 1; i < polygon.length; j = i++) {
+            const xi = polygon[i][0],
+                yi = polygon[i][1];
+            const xj = polygon[j][0],
+                yj = polygon[j][1];
+            const intersect =
+                yi > y !== yj > y &&
+                x < ((xj - xi) * (y - yi)) / (yj - yi) + xi;
+            if (intersect) inside = !inside;
+        }
+        return inside;
+    };
+
     const displayClosestKmlPoint = (coordinate) => {
         if (!kmlLayerRef.current) return; // if kml layer is loaded
 
         const kmlFeatures = kmlLayerRef.current.getSource().getFeatures();
 
-        let closestFeature = null;
-        let closestDistance = Infinity;
+        let containingFeature = null;
 
-        // Reset the style of all KML features
-        const emptyStyle = new Style({});
-        kmlFeatures.forEach((feature) => {
-            feature.setStyle(emptyStyle);
-        });
+        for (const feature of kmlFeatures) {
+            const coords = feature.getGeometry().flatCoordinates;
+            const polygonCoords = [
+                [coords[0], coords[1]],
+                [coords[3], coords[4]],
+                [coords[6], coords[7]],
+                [coords[9], coords[10]],
+            ];
 
-        kmlFeatures.forEach((feature) => {
-            const geom = feature.getGeometry();
-            const flatCoordinates = geom.flatCoordinates;
-            const featureCoord = toLonLat([
-                flatCoordinates[0],
-                flatCoordinates[1],
-            ]);
-            const distance = getDistance(toLonLat(coordinate), featureCoord);
-            if (distance < closestDistance) {
-                closestDistance = distance;
-                closestFeature = feature;
+            if (isPointInPolygon(coordinate, polygonCoords)) {
+                containingFeature = feature;
+                break;
             }
-        });
+        }
 
-        if (closestFeature) {
-            const coords = closestFeature.getGeometry().flatCoordinates;
-            console.log(coords);
-
-            // ----------------- Drawing the marker ----------------- \\
-            closestMarkerLayerRef.current.getSource().clear();
-
-            const marker = new Feature({
-                geometry: new Point([coords[0], coords[1]]),
-            });
-
-            marker.setStyle(
-                new Style({
-                    image: new Icon({
-                        src: "ylw-diamond.png",
-                        scale: 0.6,
-                    }),
-                })
-            );
-
-            closestMarkerLayerRef.current.getSource().addFeature(marker);
+        if (containingFeature) {
+            const coords = containingFeature.getGeometry().flatCoordinates;
 
             // ----------------- Drawing the Border ----------------- \\
             const polygonCoords = [
