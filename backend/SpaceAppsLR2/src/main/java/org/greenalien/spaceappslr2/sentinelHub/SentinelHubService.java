@@ -125,7 +125,27 @@ public class SentinelHubService {
         return enumString;
     }
 
-    public void requestPngImage(Map<String, Double> bboxBounds, String from, String to, Double width, Double height, int maxCloudCoverage, List<Band> bands) {
+    private String bandEnumToReturnStringJson(List<Band> bands){
+        String enumString = "";
+
+        for(Band band : bands){
+            enumString +=  "sample." + band.toString() + ",";
+        }
+
+        //Remove the trailing comma
+        enumString = enumString.substring(0, enumString.length() - 1);
+
+        enumString = "[" + enumString + "]";
+
+        logger.info("Bands as return string: " + enumString);
+
+        return enumString;
+    }
+
+    public byte[] requestPngImage(Map<String, Double> bboxBounds, String from, String to, Double width, Double height, int maxCloudCoverage, List<Band> bands) {
+
+        byte[] pngImage = null;
+
         refreshOauth2Token();
 
         String requestURL = "https://services-uswest2.sentinel-hub.com/api/v1/process";
@@ -185,6 +205,9 @@ public class SentinelHubService {
                 if (statusCode == 200) {
                     HttpEntity entity = response.getEntity();
                     if (entity != null) {
+
+                        pngImage = EntityUtils.toByteArray(entity);
+
                         try (InputStream inputStream = entity.getContent();
                              FileOutputStream outputStream = new FileOutputStream("output.png")) {
                             byte[] buffer = new byte[1024];
@@ -204,6 +227,8 @@ public class SentinelHubService {
         }
 
         logger.info("PNG image request complete");
+
+        return pngImage;
     }
 
     public JsonNode requestJsonData(Map<String, Double> bboxBounds, String from, String to, Double width, Double height, List<Band> bands) {
@@ -242,7 +267,31 @@ public class SentinelHubService {
         logger.info("Bands size: " + bands.size());
 
         // Evalscript
-        aggregationNode.put("evalscript", "\n//VERSION=3\nfunction setup(){\n  return {\n    input: [{\n      bands:" + bandsStringJson + ",\n    }],\n    output: [\n      {\n        id: \"data\",\n        bands: " + bands.size() + ",\n      },\n      {\n        id: \"dataMask\",\n        bands: 1\n      }\n    ]\n  };\n}\n\nfunction evaluatePixel(sample) {\n    let ndvi = (sample.B05 - sample.B04) / (sample.B05 + sample.B04);\n    return {\n      data: [ndvi, sample.B05, sample.B04],\n      dataMask: [sample.dataMask],\n    };\n}\n");
+        aggregationNode.put("evalscript", "//VERSION=3\n" +
+                "function setup() {\n" +
+                "  return {\n" +
+                "    input: [{\n" +
+                "      bands: " + bandsStringJson +
+                "    }],\n" +
+                "    output: [\n" +
+                "      {\n" +
+                "        id: \"data\",\n" +
+                "        bands: " + bands.size() + "\n" +
+                "      },\n" +
+                "      {\n" +
+                "        id: \"dataMask\",\n" +
+                "        bands: 1\n" +
+                "      }\n" +
+                "    ]\n" +
+                "  };\n" +
+                "}\n" +
+                "\n" +
+                "function evaluatePixel(sample) {\n" +
+                "  return {\n" +
+                "    data: [sample.B01, sample.B02, sample.B03, sample.B04, sample.B05, sample.B06, sample.B07, sample.B08, sample.B09, sample.B10],\n" +
+                "    dataMask: [sample.dataMask] // Include the dataMask in the output\n" +
+                "  };\n" +
+                "}\n");
 
         // Calculations node
         requestBody.putObject("calculations").putObject("default");

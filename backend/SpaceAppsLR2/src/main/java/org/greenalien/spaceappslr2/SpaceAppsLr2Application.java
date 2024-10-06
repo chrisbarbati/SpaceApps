@@ -69,16 +69,16 @@ public class SpaceAppsLr2Application implements CommandLineRunner {
 		int maxCloudCoverage = 5;
 
 		List<Band> bands = new ArrayList<>();
-//		bands.add(Band.B01);
-//		bands.add(Band.B02);
-//		bands.add(Band.B03);
-//		bands.add(Band.B04);
+		bands.add(Band.B01);
+		bands.add(Band.B02);
+		bands.add(Band.B03);
+		bands.add(Band.B04);
 		bands.add(Band.B05);
-//		bands.add(Band.B06);
-//		bands.add(Band.B07);
-//		bands.add(Band.B08);
-//		bands.add(Band.B09);
-//		bands.add(Band.B10);
+		bands.add(Band.B06);
+		bands.add(Band.B07);
+		bands.add(Band.B08);
+		bands.add(Band.B09);
+		bands.add(Band.B10);
 
 		//sentinelHubService.requestPngImage(bboxBounds, from, to, width, height, maxCloudCoverage, bands);
 		JsonNode results = sentinelHubService.requestJsonData(bboxBounds, from, to, width, height, bands);
