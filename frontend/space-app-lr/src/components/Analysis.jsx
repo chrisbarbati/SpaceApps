@@ -199,12 +199,21 @@ const Analysis = ({ data }) => {
                     </div>
                 </form>
             </div>
-            <div className="chart-grid">
-                {Object.entries(aggregatedData).map(([band, bandData]) => (
-                    <div className="chart" key={band}>
-                        <BandScatterPlot bandName={band} bandData={bandData} />
-                    </div>
-                ))}
+            <div className="chart-container">
+                <h1 className="pb-2">Landsat Results</h1>
+                <div className="image-result pb-4">
+                    <img src="/output.png" />
+                </div>
+                <div className="chart-grid pt-4">
+                    {Object.entries(aggregatedData).map(([band, bandData]) => (
+                        <div className="chart" key={band}>
+                            <BandScatterPlot
+                                bandName={band}
+                                bandData={bandData}
+                            />
+                        </div>
+                    ))}
+                </div>
             </div>
         </div>
     );

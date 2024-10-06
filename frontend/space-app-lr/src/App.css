@@ -77,6 +77,8 @@ h1 {
     font-weight: 600;
     transition: background-color 0.3s ease, transform 0.3s ease;
     min-width: 150px;
+    text-decoration: none;
+    text-align: center;
 }
 
 .primary-button:hover {
@@ -102,6 +104,19 @@ p {
     align-items: center;
     position: relative;
 }
+.number-circle {
+    display: flex;
+    justify-content: center; 
+    align-items: center; 
+    width: 40px; 
+    height: 40px; 
+    border-radius: 50%; 
+    background-color: var(--foreground-color);
+    color: var(--text-color); 
+    font-size: var(--font-size-large);
+    margin: 5px; 
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); 
+}
 
 .landing-header {
     display: flex;
@@ -112,11 +127,12 @@ p {
 
 .landing-header h1 {
     font-weight: 700;
+    font-size: var(--font-size-xxlarge);
 }
 
 .landing-header p {
     font-weight: 500;
-    font-size: var(--font-size-large);
+    font-size: var(--font-size-xxlarge);
 }
 
 .landing-highlights {
@@ -154,7 +170,7 @@ p {
     animation: fadeIn 0.5s ease forwards;
     padding: 20px;
     width: 90%;
-    max-width: 500px;
+    max-width: 400px;
     background-color: var(--bg-color);
     border-radius: 16px;
     height: 250px;

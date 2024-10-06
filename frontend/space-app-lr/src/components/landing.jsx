@@ -9,22 +9,24 @@ function LandingPage() {
                 <p className="text-center subtitle">
                 Landsat Reflectance Data: On the Fly and at Your Fingertips
                 </p>
-                <button className="primary-button">Get Started</button>
+                <a href="#main-container" className="primary-button">
+                    Get Started
+                </a>
             </div>
             <div className="landing-highlights">
                 <article className="highlight">
-                    <h2>1</h2>
+                    <h2 className="number-circle">1</h2>
                     <p>
                         Select a location by entering a name or clicking on the
                         map.
                     </p>
                 </article>
                 <article className="highlight">
-                    <h2>2</h2>
+                    <h2 className="number-circle">2</h2>
                     <p>Customize your data by selecting bands.</p>
                 </article>
                 <article className="highlight">
-                    <h2>3</h2>
+                    <h2 className="number-circle">3</h2>
                     <p>View your results.</p>
                 </article>
             </div>

@@ -20,7 +20,7 @@
 .sidebar {
     width: 350px;
     min-width: 350px;
-    height: 100vh; 
+    height: auto; 
     padding: 20px;
     background-color: var(--foreground-color);
     display: flex;
@@ -71,13 +71,12 @@
 
 .chart-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    grid-template-columns: repeat(3, 1fr);
     grid-gap: 20px;
     width: 100%;
     max-width: 1200px;
-    box-sizing: border-box;
 }
-@media screen and (max-width: 1400px) {
+@media screen and (max-width: 1900px) {
     .chart-grid {
         grid-template-columns: repeat(2, 1fr);
     }
@@ -88,9 +87,6 @@
         grid-template-columns: repeat(1, 1fr);
     }
     
-}
-.chart {
-    height: 80%;
 }
 
 .band-scatter-plot h2 {

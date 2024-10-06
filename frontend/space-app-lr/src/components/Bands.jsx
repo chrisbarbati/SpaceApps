@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import Analysis from "./Analysis";
 
 const bandInfo = [
     {
@@ -59,7 +60,9 @@ const bandInfo = [
     },
 ];
 
-function Bands() {
+function Bands({ coordinates, boundingBoxCoordinates }) {
+    console.log(coordinates);
+    console.log(boundingBoxCoordinates);
     const [bands, setBands] = useState(() => {
         return bandInfo.reduce((acc, band) => {
             acc[band.id] = false;
@@ -68,147 +71,183 @@ function Bands() {
     });
     const [startDate, setStartDate] = useState("");
     const [endDate, setEndDate] = useState("");
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(null);
     const [imageSize, setImageSize] = useState("3x3");
     const [cloudCoverage, setCloudCoverage] = useState(0);
+    const [isAnalysisVisible, setIsAnalysisVisible] = useState(false);
+    const [data, setData] = useState(false);
+
+    // response states
+    const [imageResponse, setimageResponse] = useState(null);
+    const [dataResponse, setdataResponse] = useState(null);
 
     const handleCheckboxChange = (event) => {
         const { id, checked } = event.target;
         setBands((prev) => ({ ...prev, [id]: checked }));
     };
 
-    const handleSubmit = async (event) => {
-        event.preventDefault();
-        const selectedBands = Object.keys(bands)
-            .filter((band) => bands[band])
-            .join(",");
-
-        setLoading(true); // Set loading to true before fetching
-
+    const getLandsetData = async () => {
         try {
-            const imageResponse = await axios.get(
-                "http://localhost:8080/api/landsatImage",
-                {
-                    params: { bands: selectedBands, startDate, endDate },
-                    headers: { "Content-Type": "application/json" },
-                }
-            );
-
-            const dataResponse = await axios.get(
-                "http://localhost:8080/api/landsatData",
-                {
-                    params: { bands: selectedBands, startDate, endDate },
-                    headers: { "Content-Type": "application/json" },
-                }
-            );
-
-            console.log(imageResponse.data, dataResponse.data);
+            console.log("Fetching landsat data...");
+            // const response = await axios.get(
+            //     "http://localhost:8080/api/landsatData"
+            // );
+            const response = await fetch("/example.json"); // Adjust the filename as needed
+            if (!response.ok) {
+                throw new Error("Network response was not ok");
+            }
+            const jsonData = await response.json();
+            setData(jsonData);
+            return jsonData;
         } catch (error) {
-            console.error("Error fetching data:", error);
-            setError(
-                error.response
-                    ? error.response.data
-                    : "An error occurred while fetching data."
-            );
-        } finally {
-            setLoading(false);
+            console.log("Failed to fetch landset data", error);
         }
     };
 
-    useEffect(() => {
-        setLoading(false); // Set loading to false initially
-    }, []);
-
-    if (loading) return <p>Loading...</p>;
-    if (error) return <p>Error: {error}</p>;
+    const handleSubmit = async (event) => {
+        event.preventDefault();
+        // if (imageSize === "3x3") {
+        //     const imageResponse = await axios.get(
+        //         "http://localhost:8080/api/landsat3x3",
+        //         {
+        //             params: {
+        //                 coordinates: coordinates,
+        //                 boundingBoxCoordinates: boundingBoxCoordinates,
+        //                 startDate: startDate,
+        //                 endDate: endDate,
+        //                 imageSize: imageSize,
+        //                 cloudCoverage: cloudCoverage,
+        //             },
+        //             headers: { "Content-Type": "application/json" },
+        //         }
+        //     );
+        //     setimageResponse(imageResponse);
+        // } else if (imageSize === "full") {
+        //     const imageResponse = await axios.get(
+        //         "http://localhost:8080/api/landsatImage",
+        //         {
+        //             params: {
+        //                 boundingBoxCoordinates: boundingBoxCoordinates,
+        //                 startDate: startDate,
+        //                 endDate: endDate,
+        //                 imageSize: imageSize,
+        //                 cloudCoverage: cloudCoverage,
+        //             },
+        //             headers: { "Content-Type": "application/json" },
+        //         }
+        //     );
+        //     setimageResponse(imageResponse);
+        // }
+        // const dataResponse = await axios.get(
+        //     "http://localhost:8080/api/landsatData",
+        //     {
+        //         params: {
+        //             boundingBoxCoordinates: boundingBoxCoordinates,
+        //             startDate: startDate,
+        //             endDate: endDate,
+        //             imageSize: imageSize,
+        //             cloudCoverage: cloudCoverage,
+        //         },
+        //         headers: { "Content-Type": "application/json" },
+        //     }
+        // );
+        // setdataResponse(dataResponse);
+        console.log("Fetching landsat data...");
+        const landsatData = await getLandsetData();
+        console.log("Landsat Data:", landsatData);
+        setIsAnalysisVisible(true);
+    };
 
     return (
-        <div className="bands-container">
-            <div className="sidebar">
-                <div className="form-header">
-                    <h2>Filters</h2>
-                </div>
-                <form onSubmit={handleSubmit}>
-                    <label>
-                        Start Date:
-                        <input
-                            type="date"
-                            value={startDate}
-                            onChange={(e) => setStartDate(e.target.value)}
-                            required
-                            className="styled-date"
-                        />
-                    </label>
-                    <label>
-                        End Date:
-                        <input
-                            type="date"
-                            value={endDate}
-                            onChange={(e) => setEndDate(e.target.value)}
-                            required
-                            className="styled-date"
-                        />
-                    </label>
-                    <label>Pick the Image Size</label>
-                    <select
-                        id="image-size-selector"
-                        value={imageSize}
-                        onChange={(e) => setImageSize(e.target.value)}
-                        required
-                        className="styled-select fade-input"
-                    >
-                        <option value="3x3">3x3</option>
-                        <option value="full">Full</option>
-                    </select>
-                    <div className="slider-container">
-                        <label>Cloud Coverage: {cloudCoverage}%</label>
-                        <input
-                            type="range"
-                            min={0}
-                            max={100}
-                            value={cloudCoverage}
-                            onChange={(e) =>
-                                setCloudCoverage(Number(e.target.value))
-                            }
-                            className="slider"
-                        />
+        <>
+            <div className="bands-container" id="bands-page">
+                <div className="sidebar">
+                    <div className="form-header">
+                        <h2>Filters</h2>
                     </div>
-                    <button type="submit" className="primary-button mt-4">
-                        Fetch Data
-                    </button>
-                </form>
-            </div>
-            <div className="bands-control-container">
-                <div className="bands-header mt-2 text-center pt-2 pb-2">
-                    <h3>Choose Your Desired Landsat Bands:</h3>
-                    <p>Hover over each card to view detailed descriptions.</p>
-                </div>
-                <div className="bands-grid">
-                    {bandInfo.map((band) => (
-                        <div key={band.id} className="band-card">
-                            <div className="band-card-inner">
-                                <div className="band-card-front">
-                                    <label>{band.label}</label>
-                                </div>
-                                <div className="band-card-back">
-                                    <p>{band.description}</p>
-                                </div>
-                            </div>
-                            <div className="checkbox-container">
-                                <input
-                                    type="checkbox"
-                                    id={band.id}
-                                    checked={bands[band.id] || false}
-                                    onChange={handleCheckboxChange}
-                                    className="band-checkbox"
-                                />
-                            </div>
+                    <form onSubmit={handleSubmit}>
+                        <label>
+                            Start Date:
+                            <input
+                                type="date"
+                                value={startDate}
+                                onChange={(e) => setStartDate(e.target.value)}
+                                required
+                                className="styled-date"
+                            />
+                        </label>
+                        <label>
+                            End Date:
+                            <input
+                                type="date"
+                                value={endDate}
+                                onChange={(e) => setEndDate(e.target.value)}
+                                required
+                                className="styled-date"
+                            />
+                        </label>
+                        <label>Pick the Image Size</label>
+                        <select
+                            id="image-size-selector"
+                            value={imageSize}
+                            onChange={(e) => setImageSize(e.target.value)}
+                            required
+                            className="styled-select fade-input"
+                        >
+                            <option value="3x3">3x3</option>
+                            <option value="full">Full</option>
+                        </select>
+                        <div className="slider-container">
+                            <label>Cloud Coverage: {cloudCoverage}%</label>
+                            <input
+                                type="range"
+                                min={0}
+                                max={100}
+                                value={cloudCoverage}
+                                onChange={(e) =>
+                                    setCloudCoverage(Number(e.target.value))
+                                }
+                                className="slider"
+                            />
                         </div>
-                    ))}
+                        <button type="submit" className="primary-button mt-4">
+                            Fetch Data
+                        </button>
+                    </form>
+                </div>
+                <div className="bands-control-container">
+                    <div className="bands-header mt-2 text-center pt-2 pb-2">
+                        <h3>Choose Your Desired Landsat Bands:</h3>
+                        <p>
+                            Hover over each card to view detailed descriptions.
+                        </p>
+                    </div>
+                    <div className="bands-grid">
+                        {bandInfo.map((band) => (
+                            <div key={band.id} className="band-card">
+                                <div className="band-card-inner">
+                                    <div className="band-card-front">
+                                        <label>{band.label}</label>
+                                    </div>
+                                    <div className="band-card-back">
+                                        <p>{band.description}</p>
+                                    </div>
+                                </div>
+                                <div className="checkbox-container">
+                                    <input
+                                        type="checkbox"
+                                        id={band.id}
+                                        checked={bands[band.id] || false}
+                                        onChange={handleCheckboxChange}
+                                        className="band-checkbox"
+                                    />
+                                </div>
+                            </div>
+                        ))}
+                    </div>
                 </div>
             </div>
-        </div>
+            {isAnalysisVisible && <Analysis data={data} />}
+        </>
     );
 }
 
