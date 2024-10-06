@@ -27,6 +27,7 @@ const MapComponent = () => {
     const kmlLayerRef = useRef(null);
     const borderLayerRef = useRef(null);
     const searchBoxRef = useRef(null);
+    const [boundingBox, setBoundingBox] = useState(null);
     const [isAnalysisVisible, setIsAnalysisVisible] = useState(false);
     const [data, setData] = useState(false);
     const [coordinates, setCoordinates] = useState(null);
@@ -229,6 +230,7 @@ const MapComponent = () => {
             const coords = containingFeature.getGeometry().flatCoordinates;
 
             // ----------------- Drawing the Border ----------------- \\
+
             const polygonCoords = [
                 [coords[3], coords[4]],
                 [coords[6], coords[7]],
@@ -236,6 +238,18 @@ const MapComponent = () => {
                 [coords[12], coords[13]],
                 [coords[3], coords[4]],
             ];
+
+            const boundingBoxCoords = [
+                toLonLat([coords[3], coords[4]]),
+                toLonLat([coords[6], coords[7]]),
+                toLonLat([coords[9], coords[10]]),
+                toLonLat([coords[12], coords[13]]),
+                toLonLat([coords[3], coords[4]]),
+            ];
+
+            setBoundingBox(boundingBoxCoords);
+            console.log(boundingBoxCoords);
+            console.log("Bounding box set to: ", boundingBoxCoords);
 
             const borderPolygon = new Feature({
                 geometry: new Polygon([polygonCoords]),
@@ -322,6 +336,13 @@ const MapComponent = () => {
         } else {
             console.log("Please fill all required fields");
             setFormMessage("Please fill all required fields.");
+        }
+        // Fetch landsat data
+        console.log("Fetching landsat data...");
+        const landsatData = await getLandsetData();
+        console.log("Landsat Data:", landsatData);
+        if (landsatData) {
+            setIsAnalysisVisible(true); // Update the state to show analysis
         }
     };
 
