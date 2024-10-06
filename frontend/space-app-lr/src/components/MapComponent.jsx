@@ -343,6 +343,28 @@ const MapComponent = () => {
         }
     };
 
+    const handleUseCurrentLocation = () => {
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(
+                (position) => {
+                    const { latitude, longitude } = position.coords;
+                    setLat(latitude.toFixed(6));
+                    setLng(longitude.toFixed(6));
+
+                    const newCoordinate = fromLonLat([longitude, latitude]);
+                    updateMarkerPosition(newCoordinate);
+                    map.current.getView().setCenter(newCoordinate);
+                    map.current.getView().setZoom(14);
+                },
+                (error) => {
+                    console.error("Error fetching location", error);
+                }
+            );
+        } else {
+            console.error("Geolocation is not supported by this browser.");
+        }
+    };
+
     return (
         <>
             <div id="main-container">
@@ -356,6 +378,15 @@ const MapComponent = () => {
                             placeholder="Search by Name..."
                             className="mb-2"
                         />
+                        <div>
+                            <button
+                                type="button"
+                                className="my-4 primary-button"
+                                onClick={handleUseCurrentLocation}
+                            >
+                                Use Current Location
+                            </button>
+                        </div>
                         <p className="text-center">
                             Or input Lat/Long manually:
                         </p>
