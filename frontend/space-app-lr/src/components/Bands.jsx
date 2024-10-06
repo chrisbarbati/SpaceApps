@@ -61,8 +61,6 @@ const bandInfo = [
 ];
 
 function Bands({ coordinates, boundingBoxCoordinates }) {
-    console.log(coordinates);
-    console.log(boundingBoxCoordinates);
     const [bands, setBands] = useState(() => {
         return bandInfo.reduce((acc, band) => {
             acc[band.id] = false;
@@ -153,7 +151,6 @@ function Bands({ coordinates, boundingBoxCoordinates }) {
         // setdataResponse(dataResponse);
         console.log("Fetching landsat data...");
         const landsatData = await getLandsetData();
-        console.log("Landsat Data:", landsatData);
         setIsAnalysisVisible(true);
     };
 
