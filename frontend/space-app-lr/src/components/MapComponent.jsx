@@ -388,7 +388,7 @@ const MapComponent = () => {
 
                         <button
                             id="submit"
-                            className="mtt-4 mt-4"
+                            className="mtt-4 mt-4 primary-button"
                             type="submit"
                         >
                             Submit
@@ -411,9 +411,9 @@ const MapComponent = () => {
                             boxShadow: "0 4px 20px rgba(0, 0, 0, 0.5)",
                         }}
                     ></div>
+                    <ImageComponent />
                 </div>
             </div>
-            <ImageComponent />
         </>
     );
 };
