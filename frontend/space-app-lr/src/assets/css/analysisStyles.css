@@ -20,7 +20,7 @@
 .sidebar {
     width: 350px;
     min-width: 350px;
-    height: 100vh; 
+    height: auto; 
     padding: 20px;
     background-color: var(--foreground-color);
     display: flex;
