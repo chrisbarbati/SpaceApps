@@ -204,7 +204,7 @@ const Analysis = ({ data }) => {
                 <div className="image-result pb-4">
                     <img src="/output.png" />
                 </div>
-                <div className="chart-grid">
+                <div className="chart-grid pt-4">
                     {Object.entries(aggregatedData).map(([band, bandData]) => (
                         <div className="chart" key={band}>
                             <BandScatterPlot
