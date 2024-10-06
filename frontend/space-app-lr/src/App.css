@@ -394,17 +394,6 @@ input[type="email"]:focus,
     min-height: 100vh;
 }
 
-.bands-sidebar {
-    height: auto;
-   width: 330px;
-    padding: 20px;
-    background-color: var(--foreground-color);
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-}
-
 .bands-control-container{
     display: flex;
     flex-direction: column;

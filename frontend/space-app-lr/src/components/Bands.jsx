@@ -174,7 +174,7 @@ function Bands() {
                             className="slider"
                         />
                     </div>
-                    <button type="submit" className="primary-button">
+                    <button type="submit" className="primary-button mt-4">
                         Fetch Data
                     </button>
                 </form>
