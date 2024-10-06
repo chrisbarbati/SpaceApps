@@ -1,0 +1,71 @@
+:root {
+    /* Colors */
+    --bg-color: #2e3440;
+    --foreground-color: #4c566a;
+    --text-color: #eceff4;
+    --chart-color: #d8dee9;
+    --accent: #5e81ac;
+    --accent-hover: #5d88bc;
+    --black: #0c0b0b;
+
+    /* Font Sizes */
+    --font-size-small: 0.875rem;
+    /* 14px */
+    --font-size-medium: 1rem;
+    /* 16px */
+    --font-size-large: 1.25rem;
+    /* 20px */
+    --font-size-xlarge: 1.5rem;
+    /* 24px */
+    --font-size-xxlarge: 2rem;
+    /* 32px */
+    --font-size-title: 2.5rem;
+    /* 40px */
+}
+
+.analysis-container {
+    background-color: var(--bg-color);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    width: 100%;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+.centered-image {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    margin-bottom: 20px;
+}
+
+.centered-image img {
+    max-width: 100%;
+    height: auto;
+    object-fit: contain;
+    max-height: 300px;
+}
+
+.chart-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr); /* 3 columns */
+    grid-template-rows: repeat(3, 1fr);    /* 3 rows */
+    grid-gap: 20px;
+    width: 100%;
+    max-width: 1200px;
+    box-sizing: border-box;
+}
+
+.chart {
+    background-color: var(--chart-color);
+    border: 1px solid #ccc;
+    padding: 20px;
+    text-align: center;
+    height: 200px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
