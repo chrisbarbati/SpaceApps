@@ -319,14 +319,6 @@ const MapComponent = () => {
             } else {
                 setFormMessage("Form submitted without notifications.");
             }
-
-            // Fetch landsat data
-            console.log("Fetching landsat data...");
-            const landsatData = await getLandsetData();
-            console.log("Landsat Data:", landsatData);
-            if (landsatData) {
-                setIsAnalysisVisible(true); // Update the state to show analysis
-            }
         } else {
             console.log("Please fill all required fields");
             setFormMessage("Please fill all required fields.");
