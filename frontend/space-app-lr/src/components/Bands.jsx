@@ -61,8 +61,6 @@ const bandInfo = [
 ];
 
 function Bands({ coordinates, boundingBoxCoordinates }) {
-    console.log(coordinates);
-    console.log(boundingBoxCoordinates);
     const [bands, setBands] = useState(() => {
         return bandInfo.reduce((acc, band) => {
             acc[band.id] = false;
