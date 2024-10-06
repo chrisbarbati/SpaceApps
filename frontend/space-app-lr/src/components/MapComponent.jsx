@@ -34,10 +34,6 @@ const MapComponent = () => {
     const [isNotificationEnabled, setIsNotificationEnabled] = useState(false);
     const [lat, setLat] = useState("");
     const [lng, setLng] = useState("");
-    const [email, setEmail] = useState("");
-    const [leadTime, setLeadTime] = useState("2"); // Default to 2 Hours
-    const [cloudCoverage, setCloudCoverage] = useState(0); // Default to 0
-    const [formMessage, setFormMessage] = useState(""); // Track form status
 
     const getLandsetData = async () => {
         try {
@@ -248,8 +244,6 @@ const MapComponent = () => {
             ];
 
             setBoundingBox(boundingBoxCoords);
-            console.log(boundingBoxCoords);
-            console.log("Bounding box set to: ", boundingBoxCoords);
 
             const borderPolygon = new Feature({
                 geometry: new Polygon([polygonCoords]),
@@ -277,73 +271,14 @@ const MapComponent = () => {
 
     const handleSubmit = async (event) => {
         event.preventDefault();
-        setFormMessage("");
-        console.log("Form submitted!");
-
-        console.log("Latitude: ", lat);
-        console.log("Longitude: ", lng);
-        console.log("Notification enabled: ", isNotificationEnabled);
-        console.log("Email: ", email);
-        console.log("Lead Time: ", leadTime);
-        console.log("Cloud Coverage: ", cloudCoverage);
-
-        // Ensure all fields are filled
-        if (lat && lng && (!isNotificationEnabled || (email && leadTime))) {
-            console.log("All required fields are filled");
-
-            // Update the marker position
-            updateMarkerPosition(
-                fromLonLat([parseFloat(lng), parseFloat(lat)])
-            );
-
-            if (isNotificationEnabled) {
-                const formData = {
-                    email,
-                    leadTime: parseInt(leadTime),
-                    boundingBox: {
-                        minLat: 12.44693,
-                        minLng: 10.12345,
-                        maxLat: 15.6789,
-                        maxLng: 14.56789,
-                    },
-                    cloudCoverage,
-                };
-
-                console.log(
-                    "Form Data before submission:",
-                    JSON.stringify(formData, null, 2)
-                );
-
-                try {
-                    const response = await axios.post(
-                        "http://localhost:8080/api/addEmailNotification",
-                        formData,
-                        { headers: { "Content-Type": "application/json" } }
-                    );
-
-                    console.log("Form submitted successfully:", response.data);
-                    setFormMessage("Form submitted!");
-                } catch (error) {
-                    console.error(
-                        "Error submitting the form:",
-                        error.response ? error.response.data : error
-                    );
-                    setFormMessage("Form submission failed. Please try again.");
-                }
-            } else {
-                setFormMessage("Form submitted without notifications.");
-            }
-        } else {
-            console.log("Please fill all required fields");
-            setFormMessage("Please fill all required fields.");
+        const element = document.getElementById("bands-page");
+        if (element) {
+            element.scrollIntoView();
         }
-        // Fetch landsat data
         console.log("Fetching landsat data...");
         const landsatData = await getLandsetData();
         console.log("Landsat Data:", landsatData);
-        if (landsatData) {
-            setIsAnalysisVisible(true); // Update the state to show analysis
-        }
+        setIsAnalysisVisible(true);
     };
 
     const handleUseCurrentLocation = () => {
@@ -414,66 +349,6 @@ const MapComponent = () => {
                             onChange={(e) => setLng(e.target.value)}
                             required
                         />
-                        {/* <div className="email-container">
-                            <div className="notify-checkbox">
-                                <label className="me-2">
-                                    Receive a notification for selected
-                                    location?
-                                </label>
-                                <input
-                                    type="checkbox"
-                                    onChange={handleCheckboxChange}
-                                />
-                            </div>
-
-                            <div
-                                className={`fade ${
-                                    isNotificationEnabled ? "show" : ""
-                                }`}
-                            >
-                                <label className="fade-label">Email</label>
-                                <input
-                                    id="email-input"
-                                    className="fade-input"
-                                    type="email"
-                                    value={email}
-                                    onChange={(e) => setEmail(e.target.value)}
-                                    required={isNotificationEnabled}
-                                />
-                                <label className="fade-label">Lead Time</label>
-                                <select
-                                    id="lead-time-input"
-                                    value={leadTime}
-                                    onChange={(e) =>
-                                        setLeadTime(e.target.value)
-                                    }
-                                    required={isNotificationEnabled}
-                                    className="styled-select fade-input"
-                                >
-                                    <option value="2">2 Hours</option>
-                                    <option value="6">6 Hours</option>
-                                    <option value="12">12 Hours</option>
-                                    <option value="24">24 Hours</option>
-                                </select>
-                                <div className="slider-container">
-                                    <label>
-                                        Cloud Coverage: {cloudCoverage}%
-                                    </label>
-                                    <input
-                                        type="range"
-                                        min={0}
-                                        max={100}
-                                        value={cloudCoverage}
-                                        onChange={(e) =>
-                                            setCloudCoverage(
-                                                Number(e.target.value)
-                                            )
-                                        }
-                                        className="slider"
-                                    />
-                                </div>
-                            </div>
-                        </div> */}
 
                         <button
                             id="submit"
@@ -483,9 +358,6 @@ const MapComponent = () => {
                             Submit
                         </button>
                     </form>
-                    <p className="form-message mt-2 text-center">
-                        {formMessage}
-                    </p>
                 </div>
 
                 <div id="map-container">
@@ -504,7 +376,10 @@ const MapComponent = () => {
             </div>
             <div className="landsart-data-container">
                 {/* <ImageComponent /> */}
-                <Bands />
+                <Bands
+                    coordinates={coordinates}
+                    boundingBoxCoordinates={boundingBox}
+                />
             </div>
             {isAnalysisVisible && <Analysis data={data} />}
         </>

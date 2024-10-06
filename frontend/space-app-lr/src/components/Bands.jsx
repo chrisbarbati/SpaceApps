@@ -59,7 +59,9 @@ const bandInfo = [
     },
 ];
 
-function Bands() {
+function Bands({ coordinates, boundingBoxCoordinates }) {
+    console.log(coordinates);
+    console.log(boundingBoxCoordinates);
     const [bands, setBands] = useState(() => {
         return bandInfo.reduce((acc, band) => {
             acc[band.id] = false;
@@ -68,10 +70,12 @@ function Bands() {
     });
     const [startDate, setStartDate] = useState("");
     const [endDate, setEndDate] = useState("");
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(null);
     const [imageSize, setImageSize] = useState("3x3");
     const [cloudCoverage, setCloudCoverage] = useState(0);
+
+    // response states
+    const [imageResponse, setimageResponse] = useState(null);
+    const [dataResponse, setdataResponse] = useState(null);
 
     const handleCheckboxChange = (event) => {
         const { id, checked } = event.target;
@@ -80,51 +84,56 @@ function Bands() {
 
     const handleSubmit = async (event) => {
         event.preventDefault();
-        const selectedBands = Object.keys(bands)
-            .filter((band) => bands[band])
-            .join(",");
-
-        setLoading(true); // Set loading to true before fetching
-
-        try {
+        if (imageSize === "3x3") {
+            const imageResponse = await axios.get(
+                "http://localhost:8080/api/landsat3x3",
+                {
+                    params: {
+                        coordinates: coordinates,
+                        boundingBoxCoordinates: boundingBoxCoordinates,
+                        startDate: startDate,
+                        endDate: endDate,
+                        imageSize: imageSize,
+                        cloudCoverage: cloudCoverage,
+                    },
+                    headers: { "Content-Type": "application/json" },
+                }
+            );
+            setimageResponse(imageResponse);
+        } else if (imageSize === "full") {
             const imageResponse = await axios.get(
                 "http://localhost:8080/api/landsatImage",
                 {
-                    params: { bands: selectedBands, startDate, endDate },
+                    params: {
+                        boundingBoxCoordinates: boundingBoxCoordinates,
+                        startDate: startDate,
+                        endDate: endDate,
+                        imageSize: imageSize,
+                        cloudCoverage: cloudCoverage,
+                    },
                     headers: { "Content-Type": "application/json" },
                 }
             );
-
-            const dataResponse = await axios.get(
-                "http://localhost:8080/api/landsatData",
-                {
-                    params: { bands: selectedBands, startDate, endDate },
-                    headers: { "Content-Type": "application/json" },
-                }
-            );
-
-            console.log(imageResponse.data, dataResponse.data);
-        } catch (error) {
-            console.error("Error fetching data:", error);
-            setError(
-                error.response
-                    ? error.response.data
-                    : "An error occurred while fetching data."
-            );
-        } finally {
-            setLoading(false);
+            setimageResponse(imageResponse);
         }
+        const dataResponse = await axios.get(
+            "http://localhost:8080/api/landsatData",
+            {
+                params: {
+                    boundingBoxCoordinates: boundingBoxCoordinates,
+                    startDate: startDate,
+                    endDate: endDate,
+                    imageSize: imageSize,
+                    cloudCoverage: cloudCoverage,
+                },
+                headers: { "Content-Type": "application/json" },
+            }
+        );
+        setdataResponse(dataResponse);
     };
 
-    useEffect(() => {
-        setLoading(false); // Set loading to false initially
-    }, []);
-
-    if (loading) return <p>Loading...</p>;
-    if (error) return <p>Error: {error}</p>;
-
     return (
-        <div className="bands-container">
+        <div className="bands-container" id="bands-page">
             <div className="sidebar">
                 <div className="form-header">
                     <h2>Filters</h2>
