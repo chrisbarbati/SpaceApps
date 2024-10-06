@@ -15,6 +15,7 @@ import Polygon from "ol/geom/Polygon";
 import KML from "ol/format/KML";
 
 import ImageComponent from "./Image";
+import Bands from "./Bands";
 
 const MapComponent = () => {
     const mapRef = useRef(null);
@@ -427,6 +428,7 @@ const MapComponent = () => {
                         }}
                     ></div>
                     <ImageComponent />
+                    <Bands />
                 </div>
             </div>
         </>

@@ -88,7 +88,7 @@ p {
     background-color: var(--bg-color);
     min-height: 100vh;
     color: var(--text-color);
-    background-image: url(./assets/bg-img-2.jpg);
+    background-image: url(./assets/bg-img.jpg);
     background-position: center;
     background-repeat: no-repeat;
     background-size: cover;
@@ -100,7 +100,6 @@ p {
 }
 
 .landing-header {
-    text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.9);
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -374,4 +373,111 @@ input[type="email"]:focus,
     flex-direction: column;
     justify-content: center;
     align-items: center;
+}
+
+/*BANDS COMP STYLES*/
+.bands-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px;
+    margin-bottom: 20px;
+}
+
+.band-card {
+    /* Enables 3D perspective for the card */
+    perspective: 1000px;
+    width: 200px;
+    text-align: center;
+
+}
+
+.bands-header p {
+    font-size: var(--font-size-medium);
+    font-style: italic;
+}
+
+.band-card-inner {
+    position: relative;
+    width: 100%;
+    height: 200px;
+    transition: transform 0.6s;
+    /* Smooth transition for flip */
+    transform-style: preserve-3d;
+    /* Maintain 3D space for child elements */
+}
+
+.band-card-front,
+.band-card-back {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    backface-visibility: hidden;
+    /* Hide back face when not flipped */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px;
+    background-color: var(--foreground-color);
+    border: 1px solid var(--text-color);
+}
+
+.band-card-back {
+    /* Flip the back side */
+    transform: rotateY(180deg);
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+    background-color: #425975;
+    color: var(--text-color);
+    font-size: var(--font-size-medium);
+}
+
+.band-card:hover .band-card-inner {
+    transform: rotateY(180deg);
+    /* Flip the card on hover */
+}
+
+.band-card label {
+    font-size: var(--font-size-large);
+    margin-bottom: 10px;
+    text-align: center;
+}
+
+/* Checkbox Styles */
+.checkbox-container {
+    display: flex;
+    justify-content: center;
+    margin-top: 10px;
+}
+
+.band-checkbox {
+    width: 16px;
+    height: 16px;
+    cursor: pointer;
+}
+
+/* Date Input Styles */
+input[type="date"].styled-date {
+    width: 100%;
+    padding: 10px;
+    margin-top: 10px;
+    border: 1px solid var(--accent);
+    border-radius: 4px;
+    background-color: var(--foreground-color);
+    color: var(--text-color);
+    font-size: var(--font-size-medium);
+    outline: unset;
+    transition: 0.1s ease-in-out;
+
+}
+
+input[type="date"].styled-date:focus {
+    border-color: var(--accent);
+    background-color: var(--accent-hover);
+
+}
+
+.date-fields-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 24px;
 }
