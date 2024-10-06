@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
     LineChart,
     Line,
@@ -65,192 +65,278 @@ const treemapData = [
 ];
 
 const Analysis = () => {
+    const [email, setEmail] = useState("");
+    const [leadTime, setLeadTime] = useState("");
+    const [cloudCoverage, setCloudCoverage] = useState(50);
+
+    const handleFormSubmit = (e) => {
+        e.preventDefault();
+        if ((email && !leadTime) || (!email && leadTime)) {
+            alert("Both Email and Lead Time must be filled out together.");
+        } else {
+            // Handle the form submission logic here
+            console.log("Form submitted", { email, leadTime, cloudCoverage });
+        }
+    };
+
     return (
         <div className="analysis-container">
-            <div className="centered-image">
-                <img src="marker.png" alt="Analysis" />
-            </div>
-            <div className="chart-grid">
-                {/* Chart 1: Line Chart */}
-                <div className="chart">
-                    <LineChart width={300} height={200} data={data}>
-                        <Line type="monotone" dataKey="pv" stroke="#8884d8" />
-                        <Line type="monotone" dataKey="uv" stroke="#82ca9d" />
-                        <Tooltip />
-                    </LineChart>
+            <div className="sidebar">
+                <div className="form-header">
+                    <h2>
+                        The next landsat will pass over <span></span>
+                    </h2>
                 </div>
+                <form onSubmit={handleFormSubmit}>
+                    <div className="email-container">
+                        <div>
+                            <label className="fade-label">Email</label>
+                            <input
+                                id="email-input"
+                                className="fade-input"
+                                type="email"
+                                value={email}
+                                onChange={(e) => setEmail(e.target.value)}
+                            />
+                        </div>
 
-                {/* Chart 2: Bar Chart */}
-                <div className="chart">
-                    <BarChart width={300} height={200} data={data}>
-                        <Bar dataKey="uv" fill="#8884d8" />
-                        <Bar dataKey="pv" fill="#82ca9d" />
-                        <Tooltip />
-                    </BarChart>
-                </div>
-
-                {/* Chart 3: Pie Chart */}
-                <div className="chart">
-                    <PieChart width={300} height={200}>
-                        <Pie
-                            data={pieData}
-                            cx={150}
-                            cy={100}
-                            labelLine={false}
-                            outerRadius={80}
-                            fill="#8884d8"
-                            dataKey="value"
-                        >
-                            {pieData.map((entry, index) => (
-                                <Cell
-                                    key={`cell-${index}`}
-                                    fill={
-                                        [
-                                            "#0088FE",
-                                            "#00C49F",
-                                            "#FFBB28",
-                                            "#FF8042",
-                                        ][index % 4]
-                                    }
-                                />
-                            ))}
-                        </Pie>
-                        <Tooltip />
-                    </PieChart>
-                </div>
-
-                {/* Chart 4: Radar Chart */}
-                <div className="chart">
-                    <RadarChart
-                        outerRadius={90}
-                        width={300}
-                        height={200}
-                        data={data}
-                    >
-                        <PolarGrid />
-                        <PolarAngleAxis dataKey="name" />
-                        <PolarRadiusAxis />
-                        <Radar
-                            name="Mike"
-                            dataKey="uv"
-                            stroke="#8884d8"
-                            fill="#8884d8"
-                            fillOpacity={0.6}
-                        />
-                        <Tooltip />
-                    </RadarChart>
-                </div>
-
-                {/* Chart 5: Area Chart */}
-                <div className="chart">
-                    <AreaChart width={300} height={200} data={data}>
-                        <defs>
-                            <linearGradient
-                                id="colorUv"
-                                x1="0"
-                                y1="0"
-                                x2="0"
-                                y2="1"
+                        <div>
+                            <label className="fade-label">Lead Time</label>
+                            <select
+                                id="lead-time-input"
+                                value={leadTime}
+                                onChange={(e) => setLeadTime(e.target.value)}
+                                className="styled-select fade-input"
                             >
-                                <stop
-                                    offset="5%"
-                                    stopColor="#8884d8"
-                                    stopOpacity={0.8}
-                                />
-                                <stop
-                                    offset="95%"
-                                    stopColor="#8884d8"
-                                    stopOpacity={0}
-                                />
-                            </linearGradient>
-                        </defs>
-                        <XAxis dataKey="name" />
-                        <YAxis />
-                        <CartesianGrid strokeDasharray="3 3" />
-                        <Tooltip />
-                        <Area
-                            type="monotone"
-                            dataKey="uv"
-                            stroke="#8884d8"
-                            fillOpacity={1}
-                            fill="url(#colorUv)"
-                        />
-                    </AreaChart>
+                                <option value="">Select Lead Time</option>
+                                <option value="2">2 Hours</option>
+                                <option value="6">6 Hours</option>
+                                <option value="12">12 Hours</option>
+                                <option value="24">24 Hours</option>
+                            </select>
+                        </div>
+
+                        <div className="slider-container">
+                            <label>Cloud Coverage: {cloudCoverage}%</label>
+                            <input
+                                type="range"
+                                min={0}
+                                max={100}
+                                value={cloudCoverage}
+                                onChange={(e) =>
+                                    setCloudCoverage(Number(e.target.value))
+                                }
+                                className="slider"
+                            />
+                        </div>
+
+                        <button type="submit" className="primary-button mt-4">
+                            Submit
+                        </button>
+                    </div>
+                </form>
+            </div>
+            <div className="chart-container">
+                <div className="centered-image">
+                    <img src="marker.png" alt="Analysis" />
                 </div>
 
-                {/* Chart 6: Composed Chart */}
-                <div className="chart">
-                    <ComposedChart width={300} height={200} data={data}>
-                        <XAxis dataKey="name" />
-                        <YAxis />
-                        <Tooltip />
-                        <Legend />
-                        <CartesianGrid stroke="#f5f5f5" />
-                        <Area
-                            type="monotone"
-                            dataKey="amt"
+                <div className="chart-grid">
+                    {/* Chart 1: Line Chart */}
+                    <div className="chart">
+                        <LineChart width={300} height={200} data={data}>
+                            <Line
+                                type="monotone"
+                                dataKey="pv"
+                                stroke="#8884d8"
+                            />
+                            <Line
+                                type="monotone"
+                                dataKey="uv"
+                                stroke="#82ca9d"
+                            />
+                            <Tooltip />
+                        </LineChart>
+                    </div>
+
+                    {/* Chart 2: Bar Chart */}
+                    <div className="chart">
+                        <BarChart width={300} height={200} data={data}>
+                            <Bar dataKey="uv" fill="#8884d8" />
+                            <Bar dataKey="pv" fill="#82ca9d" />
+                            <Tooltip />
+                        </BarChart>
+                    </div>
+
+                    {/* Chart 3: Pie Chart */}
+                    <div className="chart">
+                        <PieChart width={300} height={200}>
+                            <Pie
+                                data={pieData}
+                                cx={150}
+                                cy={100}
+                                labelLine={false}
+                                outerRadius={80}
+                                fill="#8884d8"
+                                dataKey="value"
+                            >
+                                {pieData.map((entry, index) => (
+                                    <Cell
+                                        key={`cell-${index}`}
+                                        fill={
+                                            [
+                                                "#0088FE",
+                                                "#00C49F",
+                                                "#FFBB28",
+                                                "#FF8042",
+                                            ][index % 4]
+                                        }
+                                    />
+                                ))}
+                            </Pie>
+                            <Tooltip />
+                        </PieChart>
+                    </div>
+
+                    {/* Chart 4: Radar Chart */}
+                    <div className="chart">
+                        <RadarChart
+                            outerRadius={90}
+                            width={300}
+                            height={200}
+                            data={data}
+                        >
+                            <PolarGrid />
+                            <PolarAngleAxis dataKey="name" />
+                            <PolarRadiusAxis />
+                            <Radar
+                                name="Mike"
+                                dataKey="uv"
+                                stroke="#8884d8"
+                                fill="#8884d8"
+                                fillOpacity={0.6}
+                            />
+                            <Tooltip />
+                        </RadarChart>
+                    </div>
+
+                    {/* Chart 5: Area Chart */}
+                    <div className="chart">
+                        <AreaChart width={300} height={200} data={data}>
+                            <defs>
+                                <linearGradient
+                                    id="colorUv"
+                                    x1="0"
+                                    y1="0"
+                                    x2="0"
+                                    y2="1"
+                                >
+                                    <stop
+                                        offset="5%"
+                                        stopColor="#8884d8"
+                                        stopOpacity={0.8}
+                                    />
+                                    <stop
+                                        offset="95%"
+                                        stopColor="#8884d8"
+                                        stopOpacity={0}
+                                    />
+                                </linearGradient>
+                            </defs>
+                            <XAxis dataKey="name" />
+                            <YAxis />
+                            <CartesianGrid strokeDasharray="3 3" />
+                            <Tooltip />
+                            <Area
+                                type="monotone"
+                                dataKey="uv"
+                                stroke="#8884d8"
+                                fillOpacity={1}
+                                fill="url(#colorUv)"
+                            />
+                        </AreaChart>
+                    </div>
+
+                    {/* Chart 6: Composed Chart */}
+                    <div className="chart">
+                        <ComposedChart width={300} height={200} data={data}>
+                            <XAxis dataKey="name" />
+                            <YAxis />
+                            <Tooltip />
+                            <Legend />
+                            <CartesianGrid stroke="#f5f5f5" />
+                            <Area
+                                type="monotone"
+                                dataKey="amt"
+                                fill="#8884d8"
+                                stroke="#8884d8"
+                            />
+                            <Bar dataKey="pv" barSize={20} fill="#413ea0" />
+                            <Line
+                                type="monotone"
+                                dataKey="uv"
+                                stroke="#ff7300"
+                            />
+                        </ComposedChart>
+                    </div>
+
+                    {/* Chart 7: Scatter Chart */}
+                    <div className="chart">
+                        <ScatterChart width={300} height={200}>
+                            <CartesianGrid />
+                            <XAxis dataKey="x" name="stature" unit="cm" />
+                            <YAxis dataKey="y" name="weight" unit="kg" />
+                            <ZAxis
+                                dataKey="z"
+                                range={[60, 400]}
+                                name="score"
+                                unit="points"
+                            />
+                            <Tooltip />
+                            <Scatter
+                                name="A school"
+                                data={scatterData}
+                                fill="#8884d8"
+                            />
+                        </ScatterChart>
+                    </div>
+
+                    {/* Chart 8: Radial Bar Chart */}
+                    <div className="chart">
+                        <RadialBarChart
+                            width={300}
+                            height={200}
+                            innerRadius="10%"
+                            outerRadius="80%"
+                            data={pieData}
+                        >
+                            <RadialBar
+                                minAngle={15}
+                                label={{
+                                    fill: "#666",
+                                    position: "insideStart",
+                                }}
+                                background
+                                clockWise
+                                dataKey="value"
+                            />
+                            <Legend />
+                            <Tooltip />
+                        </RadialBarChart>
+                    </div>
+
+                    {/* Chart 9: Treemap */}
+                    <div className="chart">
+                        <Treemap
+                            width={300}
+                            height={200}
+                            data={treemapData}
+                            dataKey="size"
+                            ratio={4 / 3}
+                            stroke="#fff"
                             fill="#8884d8"
-                            stroke="#8884d8"
                         />
-                        <Bar dataKey="pv" barSize={20} fill="#413ea0" />
-                        <Line type="monotone" dataKey="uv" stroke="#ff7300" />
-                    </ComposedChart>
-                </div>
-
-                {/* Chart 7: Scatter Chart */}
-                <div className="chart">
-                    <ScatterChart width={300} height={200}>
-                        <CartesianGrid />
-                        <XAxis dataKey="x" name="stature" unit="cm" />
-                        <YAxis dataKey="y" name="weight" unit="kg" />
-                        <ZAxis
-                            dataKey="z"
-                            range={[60, 400]}
-                            name="score"
-                            unit="points"
-                        />
-                        <Tooltip />
-                        <Scatter
-                            name="A school"
-                            data={scatterData}
-                            fill="#8884d8"
-                        />
-                    </ScatterChart>
-                </div>
-
-                {/* Chart 8: Radial Bar Chart */}
-                <div className="chart">
-                    <RadialBarChart
-                        width={300}
-                        height={200}
-                        cx={150}
-                        cy={100}
-                        innerRadius={20}
-                        outerRadius={140}
-                        barSize={10}
-                        data={pieData}
-                    >
-                        <RadialBar
-                            minAngle={15}
-                            label={{ position: "insideStart", fill: "#fff" }}
-                            background
-                            clockWise={true}
-                            dataKey="value"
-                        />
-                        <Tooltip />
-                    </RadialBarChart>
-                </div>
-
-                {/* Chart 9: Treemap */}
-                <div className="chart">
-                    <Treemap
-                        width={300}
-                        height={200}
-                        data={treemapData}
-                        dataKey="size"
-                        ratio={4 / 3}
-                        stroke="#fff"
-                    />
+                    </div>
                 </div>
             </div>
         </div>
