@@ -16,6 +16,18 @@
     --font-size-title: 2.5rem; /* 40px */
 }
 
+@media (max-width: 768px) {
+    :root {
+        /* Scaled Down Font Sizes for Mobile */
+        --font-size-small: 0.75rem; /* 12px */
+        --font-size-medium: 0.875rem; /* 14px */
+        --font-size-large: 1rem; /* 16px */
+        --font-size-xlarge: 1.25rem; /* 20px */
+        --font-size-xxlarge: 1.5rem; /* 24px */
+        --font-size-title: 2rem; /* 32px */
+    }
+}
+
 * {
     margin: unset;
     padding: unset;
@@ -26,8 +38,11 @@
 
 body {
     color: var(--text-color);
+    background-color: var(--bg-color);
 }
-
+main{
+    height: 100vh;
+}
 h1 {
     font-size: var(--font-size-title);
 }
@@ -53,13 +68,14 @@ p {
 #main-container {
     display: flex;
     width: 100%;
-    height: 100vh; 
+   height: 100%;
     background-color: var(--bg-color);
     color: var(--text-color);
 }
 
 #sidebar {
-    max-width: 30%;
+    max-width: 500px;
+    height: 100%;
     padding: 20px;
     background-color: var(--foreground-color);
     display: flex;
@@ -83,7 +99,7 @@ form {
     flex-direction: column;
     justify-content: center;
     gap: 15px;
-    width: 100%; 
+    width: 100%;
 }
 
 .form-header {
@@ -100,8 +116,9 @@ label {
 input[type="number"],
 input[type="email"],
 .styled-select {
-    width: 100%; /* Full width */
-    padding: 10px; /* Consistent padding */
+    width: 100%; 
+    padding: 10px; 
+    margin-top: 10px;
     border: 1px solid var(--accent);
     border-radius: 4px;
     background-color: var(--foreground-color);
@@ -165,7 +182,6 @@ input[type="email"]:focus,
     position: absolute;
     right: 15px;
     top: 15px;
-    font-size: 12px;
     color: var(--text-color);
 }
 
@@ -183,18 +199,19 @@ input[type="email"]:focus,
 .slider-container {
     display: flex;
     flex-direction: column;
-    width: 100%; /* Full width */
+    width: 100%; 
 }
 /* Slider Styles */
 .slider {
-    margin-top: 5px; 
     appearance: none;
     height: 5px; 
     border-radius: 5px; 
     background: var(--accent); 
     cursor: pointer;
 }
-
+.slider-container{
+    margin-top: 10px;
+}
 .slider::-webkit-slider-thumb {
     -webkit-appearance: none;
     appearance: none;

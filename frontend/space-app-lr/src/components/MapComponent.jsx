@@ -17,24 +17,48 @@ import KML from "ol/format/KML";
 const MapComponent = () => {
     const mapRef = useRef(null);
     const markerRef = useRef(null);
-    const kmlLayerRef = useRef(null); // Ref to hold the KML layer
+    const kmlLayerRef = useRef(null);
     const [map, setMap] = useState(null);
     const [coordinates, setCoordinates] = useState(null);
     const [isNotificationEnabled, setIsNotificationEnabled] = useState(false);
     const [lat, setLat] = useState("");
     const [lng, setLng] = useState("");
     const [email, setEmail] = useState("");
-    const [leadTime, setLeadTime] = useState("");
+    const [leadTime, setLeadTime] = useState("2"); // Default to 2 Hours
     const [cloudCoverage, setCloudCoverage] = useState(0); // Default to 0
+    const [formMessage, setFormMessage] = useState(""); // Track form status
 
-    const callApiTest = async () => {
+    const getLandsetData = async () => {
         try {
-            const response = await axios.get("http://localhost:8080/api/test");
+            console.log("Fetching landsat data...");
+            const response = await axios.get(
+                "http://localhost:8080/api/getLandsetData"
+            );
+
             if (response.data) {
-                console.log("Response from server", response.data);
+                // Destructuring the response data to extract needed properties
+                const { cloudCoverage, boundingBox, name } = response.data;
+                ß;
+                const { minLat, minLng, maxLat, maxLng } = boundingBox;
+
+                // Logging the values
+                console.log("Cloud Coverage:", cloudCoverage);
+                console.log("Bounding Box:", {
+                    minLat,
+                    minLng,
+                    maxLat,
+                    maxLng,
+                });
+                console.log("Name:", name);
+
+                return {
+                    cloudCoverage,
+                    boundingBox: [minLat, minLng, maxLat, maxLng], // Returning as an array
+                    name,
+                };
             }
         } catch (error) {
-            console.error("Failed to fetch", error);
+            console.log("Failed to fetch landset data", error);
         }
     };
 
@@ -91,6 +115,7 @@ const MapComponent = () => {
                 url: "centers.kml",
                 format: new KML(),
             }),
+            style: new Style({}),
         });
 
         kmlLayerRef.current = kmlLayer;
@@ -140,15 +165,15 @@ const MapComponent = () => {
         if (!kmlLayerRef.current) return; // if kml layer is loaded
 
         const kmlFeatures = kmlLayerRef.current.getSource().getFeatures(); // Get KML features
+        console.log("KML Features:", kmlFeatures);
         let closestFeature = null;
         let closestDistance = Infinity;
 
+        const emptyStyle = new Style({});
         kmlFeatures.forEach((feature) => {
-            feature.setStyle(null); // This hides the feature by setting style to null
+            feature.setStyle(emptyStyle);
         });
 
-        console.log(coordinate);
-        console.log(toLonLat(coordinate));
         kmlFeatures.forEach((feature) => {
             const geom = feature.getGeometry();
             if (
@@ -157,7 +182,6 @@ const MapComponent = () => {
                     toLonLat(geom.getCoordinates())
                 ) < closestDistance
             ) {
-                console.log("new closest distance found");
                 closestDistance = getDistance(
                     toLonLat(coordinate),
                     toLonLat(geom.getCoordinates())
@@ -165,8 +189,17 @@ const MapComponent = () => {
                 closestFeature = feature;
             }
         });
-        console.log("Closest distance: " + closestDistance);
-        console.log("Closest feature: " + closestFeature);
+
+        if (closestFeature) {
+            closestFeature.setStyle(
+                new Style({
+                    image: new Icon({
+                        src: "ylw-diamond.png", // You can use a custom icon for the closest point
+                        scale: 0.4, // Make the closest point larger or distinct
+                    }),
+                })
+            );
+        }
     };
 
     const handleCheckboxChange = (event) => {
@@ -174,24 +207,36 @@ const MapComponent = () => {
     };
     const handleSubmit = async (event) => {
         event.preventDefault();
+        setFormMessage("");
         console.log("Form submitted!");
 
-        // Ensure lat and lng are filled
-        if (lat && lng) {
-            console.log("Latitude and Longitude are filled:", lat, lng);
+        console.log("Latitude: ", lat);
+        console.log("Longitude: ", lng);
+        console.log("Notification enabled: ", isNotificationEnabled);
+        console.log("Email: ", email);
+        console.log("Lead Time: ", leadTime);
+        console.log("Cloud Coverage: ", cloudCoverage);
 
+        // Ensure all fields are filled
+        if (lat && lng && (!isNotificationEnabled || (email && leadTime))) {
+            console.log("All required fields are filled");
+
+            // Update the marker position
             updateMarkerPosition(
                 fromLonLat([parseFloat(lng), parseFloat(lat)])
             );
 
-            if (isNotificationEnabled && email && leadTime) {
+            if (isNotificationEnabled) {
                 const formData = {
-                    lat: parseFloat(lat),
-                    lng: parseFloat(lng),
-                    email: email,
+                    email,
                     leadTime: parseInt(leadTime),
-                    boundingBox: 12.44693,
-                    cloudCoverage: cloudCoverage,
+                    boundingBox: {
+                        minLat: 12.44693,
+                        minLng: 10.12345,
+                        maxLat: 15.6789,
+                        maxLng: 14.56789,
+                    },
+                    cloudCoverage,
                 };
 
                 console.log(
@@ -203,25 +248,29 @@ const MapComponent = () => {
                     const response = await axios.post(
                         "http://localhost:8080/api/addEmailNotification",
                         formData,
-                        {
-                            headers: {
-                                "Content-Type": "application/json",
-                            },
-                        }
+                        { headers: { "Content-Type": "application/json" } }
                     );
 
                     console.log("Form submitted successfully:", response.data);
+                    setFormMessage("Form submitted!");
                 } catch (error) {
-                    console.error("Error submitting the form:", error);
-                    if (error.response) {
-                        console.error("Response data:", error.response.data);
-                    }
+                    console.error(
+                        "Error submitting the form:",
+                        error.response ? error.response.data : error
+                    );
+                    setFormMessage("Form submission failed. Please try again.");
                 }
             } else {
-                console.log("Please fill all required fields");
+                setFormMessage("Form submitted without notifications.");
             }
+
+            // Fetch landsat data
+            console.log("Fetching landsat data...");
+            const landsatData = await getLandsetData();
+            console.log("Landsat Data:", landsatData);
         } else {
-            console.log("Latitude and Longitude are not filled");
+            console.log("Please fill all required fields");
+            setFormMessage("Please fill all required fields.");
         }
     };
 
@@ -229,7 +278,7 @@ const MapComponent = () => {
         <div id="main-container">
             <div id="sidebar">
                 <div className="form-header">
-                    <h1 className="text-center">Search Location</h1>
+                    <h1 className="text-center pt-4">Search Location</h1>
                     <input
                         id="search-box"
                         type="text"
@@ -312,10 +361,11 @@ const MapComponent = () => {
                         </div>
                     </div>
 
-                    <button id="submit" className="mt-4" type="submit">
+                    <button id="submit" className="mtt-4 mt-4" type="submit">
                         Submit
                     </button>
                 </form>
+                <p className="form-message mt-2 text-center">{formMessage}</p>
             </div>
 
             <div id="map-container">
