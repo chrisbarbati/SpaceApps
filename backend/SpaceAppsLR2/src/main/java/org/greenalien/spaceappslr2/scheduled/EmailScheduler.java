@@ -44,8 +44,14 @@ public class EmailScheduler {
 
             if (timeToSend) {
                 logger.info("Sending email to " + email.getEmailAddress());
-                emailSenderService.sendEmail(email.getEmailAddress(), "Space Event Reminder", "You have an event coming up soon!");
-                emailService.deleteEmail(email.getId());
+
+                String subject = "Landsat Reminder Alert!";
+                String body = "You have a scheduled alert! A Landsat will be passing over your requested coordinates " + email.getLatitude() + ", " + email.getLongitude() + " on " + email.getDate() + "\n";
+                body += "There are " + email.getLeadTime() + " hours remaining until the flyover.";
+
+                emailSenderService.sendEmail(email.getEmailAddress(), subject, body);
+
+                //emailService.deleteEmail(email.getId());
             }else{
                 logger.info("No scheduled emails to send at this time");
             }

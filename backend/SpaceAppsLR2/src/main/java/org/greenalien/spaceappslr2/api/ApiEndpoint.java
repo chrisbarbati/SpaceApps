@@ -198,7 +198,21 @@ public class ApiEndpoint {
         return sentinelHubService.requestJsonData(bboxBounds, from, to, width, height, bands);
     }
 
-    @PostMapping("/email")
+    /**
+     * Return the next flyover time as a date String
+     *
+     * @param request
+     * @return
+     */
+    @GetMapping("/nextFlyover")
+    @CrossOrigin
+    public String getNextFlyoverTime(@RequestBody Map<String, String> request){
+        JsonNode results = getLandsatData(request);
+
+        return sentinelHubService.calculateNextFlyoverTime(results);
+    }
+
+    @PostMapping("/scheduleEmail")
     @CrossOrigin
     public void scheduleEmail(@RequestBody Map<String, String> request) {
         String toEmail = request.get("toEmail");
@@ -208,10 +222,6 @@ public class ApiEndpoint {
         String longitude = request.get("longitude");
 
         DateTimeFormatter formatter = DateTimeFormatter.ISO_DATE_TIME;
-
-        String subject = "Landsat Reminder Alert!";
-        String body = "You have a scheduled alert! A Landsat will be passing over your requested coordinates " + latitude + ", " + longitude + " on " + date + "\n";
-        body += "There are " + leadTime + " hours remaining until the flyover.";
 
         emailRepository.save(new Email(toEmail, LocalDateTime.parse(date, formatter), Integer.parseInt(leadTime), Double.parseDouble(latitude), Double.parseDouble(longitude)));
         //emailSenderService.sendEmail(toEmail, subject, body);
