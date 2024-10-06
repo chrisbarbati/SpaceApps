@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.scheduling.annotation.EnableScheduling;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -20,6 +21,7 @@ import java.util.List;
 import java.util.Map;
 
 @SpringBootApplication
+@EnableScheduling
 public class SpaceAppsLr2Application implements CommandLineRunner {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(SpaceAppsLr2Application.class);
@@ -81,8 +83,13 @@ public class SpaceAppsLr2Application implements CommandLineRunner {
 		bands.add(Band.B10);
 
 		//sentinelHubService.requestPngImage(bboxBounds, from, to, width, height, maxCloudCoverage, bands);
-		JsonNode results = sentinelHubService.requestJsonData(bboxBounds, from, to, width, height, bands);
-		LOGGER.info(results.toPrettyString());
+		//JsonNode results = sentinelHubService.requestJsonData(bboxBounds, from, to, width, height, bands);
+		//LOGGER.info(results.toPrettyString());
+
+		//JsonNode results = sentinelHubService.searchCatalog(bboxBounds, from, to, width, height, bands);
+		//LOGGER.info(results.toPrettyString());
+
+		//LOGGER.info(sentinelHubService.calculateNextFlyoverTime(results));
 
 		//Test the email database service
 		//Email test = new Email();

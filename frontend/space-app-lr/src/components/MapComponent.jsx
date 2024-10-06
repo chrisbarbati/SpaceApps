@@ -26,6 +26,7 @@ const MapComponent = () => {
     const markerRef = useRef(null);
     const kmlLayerRef = useRef(null);
     const borderLayerRef = useRef(null);
+    const searchBoxRef = useRef(null);
     const [coordinates, setCoordinates] = useState(null);
     const [isNotificationEnabled, setIsNotificationEnabled] = useState(false);
     const [lat, setLat] = useState("");
@@ -142,6 +143,32 @@ const MapComponent = () => {
 
         map.current = initialMap;
 
+        const searchBox = new window.google.maps.places.Autocomplete(
+            searchBoxRef.current
+        );
+
+        searchBox.addListener("place_changed", () => {
+            const place = searchBox.getPlace();
+            if (!place.geometry) {
+                console.log(
+                    "No details available for input: '" + place.name + "'"
+                );
+                return;
+            }
+
+            const lat = place.geometry.location.lat();
+            const lng = place.geometry.location.lng();
+
+            setLat(lat.toFixed(6));
+            setLng(lng.toFixed(6));
+
+            const newCoordinate = fromLonLat([lng, lat]);
+            updateMarkerPosition(newCoordinate);
+
+            map.current.getView().setCenter(newCoordinate);
+            map.current.getView().setZoom(14);
+        });
+
         return () => {
             if (map.current) map.current.setTarget(null);
         };
@@ -162,19 +189,30 @@ const MapComponent = () => {
     };
 
     const isPointInPolygon = (point, polygon) => {
+        // Extract the x and y coordinates of the point
         const x = point[0],
             y = point[1];
         let inside = false;
+
+        // Loop through each edge of the polygon
         for (let i = 0, j = polygon.length - 1; i < polygon.length; j = i++) {
+            // Get the coordinates of the current vertex (xi, yi) and the previous vertex (xj, yj)
             const xi = polygon[i][0],
                 yi = polygon[i][1];
             const xj = polygon[j][0],
                 yj = polygon[j][1];
+
+            // Check if the point is within the y-bounds of the edge
             const intersect =
                 yi > y !== yj > y &&
+                // Check if the point is to the left of the edge
                 x < ((xj - xi) * (y - yi)) / (yj - yi) + xi;
+
+            // If the point is on the left side of the edge, toggle the inside status
             if (intersect) inside = !inside;
         }
+
+        // Return true if the point is inside the polygon, false otherwise
         return inside;
     };
 
@@ -305,6 +343,28 @@ const MapComponent = () => {
         }
     };
 
+    const handleUseCurrentLocation = () => {
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(
+                (position) => {
+                    const { latitude, longitude } = position.coords;
+                    setLat(latitude.toFixed(6));
+                    setLng(longitude.toFixed(6));
+
+                    const newCoordinate = fromLonLat([longitude, latitude]);
+                    updateMarkerPosition(newCoordinate);
+                    map.current.getView().setCenter(newCoordinate);
+                    map.current.getView().setZoom(14);
+                },
+                (error) => {
+                    console.error("Error fetching location", error);
+                }
+            );
+        } else {
+            console.error("Geolocation is not supported by this browser.");
+        }
+    };
+
     return (
         <>
             <div id="main-container">
@@ -313,10 +373,20 @@ const MapComponent = () => {
                         <h1 className="text-center pt-4">Search Location</h1>
                         <input
                             id="search-box"
+                            ref={searchBoxRef}
                             type="text"
                             placeholder="Search by Name..."
                             className="mb-2"
                         />
+                        <div>
+                            <button
+                                type="button"
+                                className="my-4 primary-button"
+                                onClick={handleUseCurrentLocation}
+                            >
+                                Use Current Location
+                            </button>
+                        </div>
                         <p className="text-center">
                             Or input Lat/Long manually:
                         </p>
