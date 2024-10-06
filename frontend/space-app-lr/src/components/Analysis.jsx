@@ -150,6 +150,9 @@ const Analysis = ({ data }) => {
 
     const aggregatedData = useMemo(() => {
         const bands = {};
+        
+        console.log("Data: " + data);
+
         data.data.forEach((interval) => {
             if (
                 interval.outputs &&

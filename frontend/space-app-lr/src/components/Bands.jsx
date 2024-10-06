@@ -104,16 +104,31 @@ function Bands({ coordinates, boundingBoxCoordinates }) {
     const handleSubmit = async (event) => {
         event.preventDefault();
         if (imageSize === "3x3") {
+            const imageResponse = await axios.get(
+                "http://localhost:8080/api/landsat3x3",
+                {
+                    params: {
+                        latitude: 32.5,
+                        longitude: 44.5,
+                        LON_UL: 44,
+                        LAT_UR: 32,
+                        LON_UR: 46,
+                        LAT_UL: 33,
+                        startDate: startDate,
+                        endDate: endDate,
+                        bands: "B01,B02,B03,B04,B05",
+                        cloudCoverage: cloudCoverage,
+                    },
+                    headers: { "Content-Type": "image/png" },
+                }
+            );
+            setimageResponse(imageResponse);
+        } else if (imageSize === "full") {
             // const imageResponse = await axios.get(
-            //     "http://localhost:8080/api/landsat3x3",
+            //     "http://localhost:8080/api/landsatImage",
             //     {
             //         params: {
-            //             coordinates: coordinates,
             //             //boundingBoxCoordinates: boundingBoxCoordinates,
-            //             LON_UL: 44,
-            //             LAT_UR: 32,
-            //             LON_UR: 46,
-            //             LAT_UL: 33,
             //             startDate: startDate,
             //             endDate: endDate,
             //             //imageSize: imageSize,
@@ -123,37 +138,22 @@ function Bands({ coordinates, boundingBoxCoordinates }) {
             //     }
             // );
             // setimageResponse(imageResponse);
-        } else if (imageSize === "full") {
-            // const imageResponse = await axios.get(
-            //     "http://localhost:8080/api/landsatImage",
-            //     {
-            //         params: {
-            //             boundingBoxCoordinates: boundingBoxCoordinates,
-            //             startDate: startDate,
-            //             endDate: endDate,
-            //             imageSize: imageSize,
-            //             cloudCoverage: cloudCoverage,
-            //         },
-            //         headers: { "Content-Type": "image/png" },
-            //     }
-            // );
-            // setimageResponse(imageResponse);
         }
         const dataResponse = await axios.get(
-            "http://localhost:8080/api/landsatData",
-            {
-                params: {
-                    LON_UL: 44,
-                    LAT_UR: 32,
-                    LON_UR: 46,
-                    LAT_UL: 33,
-                    startDate: startDate,
-                    endDate: endDate,
-                    cloudCoverage: cloudCoverage,
-                    bands: "B01,B02"
-                },
-                headers: { "Content-Type": "application/json" },
-            }
+            // "http://localhost:8080/api/landsatData",
+            // {
+            //     params: {
+            //         LON_UL: 44,
+            //         LAT_UR: 32,
+            //         LON_UR: 46,
+            //         LAT_UL: 33,
+            //         startDate: startDate,
+            //         endDate: endDate,
+            //         cloudCoverage: cloudCoverage,
+            //         bands: "B01,B02"
+            //     },
+            //     headers: { "Content-Type": "application/json" },
+            // }
         );
         //setdataResponse(dataResponse);
         console.log("Fetching landsat data...");
