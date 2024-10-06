@@ -1,5 +1,6 @@
 package org.greenalien.spaceappslr2.mongo;
 
+import org.greenalien.spaceappslr2.mail.EmailSenderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -26,4 +27,5 @@ public class EmailService {
     public void deleteEmail(String id) {
         emailRepository.deleteById(id);
     }
+
 }

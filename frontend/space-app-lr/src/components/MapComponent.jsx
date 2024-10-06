@@ -358,7 +358,7 @@ const MapComponent = () => {
     return (
         <>
             <div id="main-container">
-                <div id="sidebar">
+                <div className="sidebar">
                     <div className="form-header">
                         <h1 className="text-center pt-4">Search Location</h1>
                         <input
@@ -401,7 +401,7 @@ const MapComponent = () => {
                             onChange={(e) => setLng(e.target.value)}
                             required
                         />
-                        <div className="email-container">
+                        {/* <div className="email-container">
                             <div className="notify-checkbox">
                                 <label className="me-2">
                                     Receive a notification for selected
@@ -460,7 +460,7 @@ const MapComponent = () => {
                                     />
                                 </div>
                             </div>
-                        </div>
+                        </div> */}
 
                         <button
                             id="submit"
@@ -487,11 +487,13 @@ const MapComponent = () => {
                             boxShadow: "0 4px 20px rgba(0, 0, 0, 0.5)",
                         }}
                     ></div>
-                    <ImageComponent />
-                    <Bands />
-                    {isAnalysisVisible && <Analysis data={data} />}
                 </div>
             </div>
+            <div className="landsart-data-container">
+                {/* <ImageComponent /> */}
+                <Bands />
+            </div>
+            {isAnalysisVisible && <Analysis data={data} />}
         </>
     );
 };
