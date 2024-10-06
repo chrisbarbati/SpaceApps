@@ -16,6 +16,7 @@ import KML from "ol/format/KML";
 import { buffer as bufferExtent } from "ol/extent";
 
 import ImageComponent from "./Image";
+import Bands from "./Bands";
 
 const MapComponent = () => {
     // map is used to store the reference to the map object
@@ -427,6 +428,7 @@ const MapComponent = () => {
                         }}
                     ></div>
                     <ImageComponent />
+                    <Bands />
                 </div>
             </div>
         </>
