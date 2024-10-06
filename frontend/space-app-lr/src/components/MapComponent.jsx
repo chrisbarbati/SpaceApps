@@ -382,6 +382,7 @@ const MapComponent = () => {
                     }}
                 ></div>
             </div>
+            <ImageComponent />
         </div>
     );
 };
