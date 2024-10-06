@@ -76,7 +76,7 @@ const MapComponent = () => {
                     width: 2,
                 }),
                 fill: new Fill({
-                    color: "rgba(255, 255, 255, 0.3)",
+                    color: "rgba(94, 129, 172, 0.3)",
                 }),
             }),
         });
@@ -329,7 +329,7 @@ const MapComponent = () => {
                             className="mtt-4 mt-4 primary-button"
                             type="submit"
                         >
-                            Submit
+                            Next
                         </button>
                     </form>
                 </div>
