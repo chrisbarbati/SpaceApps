@@ -86,74 +86,83 @@ function Bands({ coordinates, boundingBoxCoordinates }) {
     };
 
     const getLandsetData = async () => {
-        try {
-            console.log("Fetching landsat data...");
-            // const response = await axios.get(
-            //     "http://localhost:8080/api/landsatData"
-            // );
-            const response = await fetch("/example.json"); // Adjust the filename as needed
-            if (!response.ok) {
-                throw new Error("Network response was not ok");
-            }
-            const jsonData = await response.json();
-            setData(jsonData);
-            return jsonData;
-        } catch (error) {
-            console.log("Failed to fetch landset data", error);
-        }
+        // try {
+        //     console.log("Fetching landsat data...");
+        //     const response = await axios.get(
+        //         "http://localhost:8080/api/landsatData"
+        //     );
+        //     //const response = await fetch("/example.json"); // Adjust the filename as needed
+        //     if (!response.ok) {
+        //         throw new Error("Network response was not ok");
+        //     }
+        //     const jsonData = await response.json();
+        //     setData(jsonData);
+        //     return jsonData;
+        // } catch (error) {
+        //     console.log("Failed to fetch landset data", error);
+        // }
     };
 
     const handleSubmit = async (event) => {
         event.preventDefault();
-        // if (imageSize === "3x3") {
-        //     const imageResponse = await axios.get(
-        //         "http://localhost:8080/api/landsat3x3",
-        //         {
-        //             params: {
-        //                 coordinates: coordinates,
-        //                 boundingBoxCoordinates: boundingBoxCoordinates,
-        //                 startDate: startDate,
-        //                 endDate: endDate,
-        //                 imageSize: imageSize,
-        //                 cloudCoverage: cloudCoverage,
-        //             },
-        //             headers: { "Content-Type": "application/json" },
-        //         }
-        //     );
-        //     setimageResponse(imageResponse);
-        // } else if (imageSize === "full") {
-        //     const imageResponse = await axios.get(
-        //         "http://localhost:8080/api/landsatImage",
-        //         {
-        //             params: {
-        //                 boundingBoxCoordinates: boundingBoxCoordinates,
-        //                 startDate: startDate,
-        //                 endDate: endDate,
-        //                 imageSize: imageSize,
-        //                 cloudCoverage: cloudCoverage,
-        //             },
-        //             headers: { "Content-Type": "application/json" },
-        //         }
-        //     );
-        //     setimageResponse(imageResponse);
-        // }
-        // const dataResponse = await axios.get(
-        //     "http://localhost:8080/api/landsatData",
-        //     {
-        //         params: {
-        //             boundingBoxCoordinates: boundingBoxCoordinates,
-        //             startDate: startDate,
-        //             endDate: endDate,
-        //             imageSize: imageSize,
-        //             cloudCoverage: cloudCoverage,
-        //         },
-        //         headers: { "Content-Type": "application/json" },
-        //     }
-        // );
-        // setdataResponse(dataResponse);
+        if (imageSize === "3x3") {
+            // const imageResponse = await axios.get(
+            //     "http://localhost:8080/api/landsat3x3",
+            //     {
+            //         params: {
+            //             coordinates: coordinates,
+            //             //boundingBoxCoordinates: boundingBoxCoordinates,
+            //             LON_UL: 44,
+            //             LAT_UR: 32,
+            //             LON_UR: 46,
+            //             LAT_UL: 33,
+            //             startDate: startDate,
+            //             endDate: endDate,
+            //             //imageSize: imageSize,
+            //             cloudCoverage: cloudCoverage,
+            //         },
+            //         headers: { "Content-Type": "image/png" },
+            //     }
+            // );
+            // setimageResponse(imageResponse);
+        } else if (imageSize === "full") {
+            // const imageResponse = await axios.get(
+            //     "http://localhost:8080/api/landsatImage",
+            //     {
+            //         params: {
+            //             boundingBoxCoordinates: boundingBoxCoordinates,
+            //             startDate: startDate,
+            //             endDate: endDate,
+            //             imageSize: imageSize,
+            //             cloudCoverage: cloudCoverage,
+            //         },
+            //         headers: { "Content-Type": "image/png" },
+            //     }
+            // );
+            // setimageResponse(imageResponse);
+        }
+        const dataResponse = await axios.get(
+            "http://localhost:8080/api/landsatData",
+            {
+                params: {
+                    LON_UL: 44,
+                    LAT_UR: 32,
+                    LON_UR: 46,
+                    LAT_UL: 33,
+                    startDate: startDate,
+                    endDate: endDate,
+                    cloudCoverage: cloudCoverage,
+                    bands: "B01,B02"
+                },
+                headers: { "Content-Type": "application/json" },
+            }
+        );
+        //setdataResponse(dataResponse);
         console.log("Fetching landsat data...");
-        const landsatData = await getLandsetData();
-        console.log("Landsat Data:", landsatData);
+        console.log("Data Response:");
+        console.log(dataResponse);
+        //const landsatData = await getLandsetData();
+        //console.log("Landsat Data:", landsatData);
         setIsAnalysisVisible(true);
     };
 
