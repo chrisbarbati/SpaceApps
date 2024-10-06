@@ -20,6 +20,8 @@ const MapComponent = () => {
     const mapRef = useRef(null);
     const markerRef = useRef(null);
     const kmlLayerRef = useRef(null);
+    const closestMarkerLayerRef = useRef(null);
+    const borderLayerRef = useRef(null);
     const [map, setMap] = useState(null);
     const [coordinates, setCoordinates] = useState(null);
     const [isNotificationEnabled, setIsNotificationEnabled] = useState(false);
@@ -66,13 +68,6 @@ const MapComponent = () => {
     useEffect(() => {
         const sceneCenter = fromLonLat([-79.457808, 44.593214]);
 
-        const corners = [
-            fromLonLat([-61.99896, 51.35789]),
-            fromLonLat([-58.67466, 51.28223]),
-            fromLonLat([-58.8617, 49.17268]),
-            fromLonLat([-62.04239, 49.2429]),
-        ];
-
         const markerFeature = new Feature({
             geometry: new Point(sceneCenter),
         });
@@ -87,24 +82,8 @@ const MapComponent = () => {
         markerFeature.setStyle(markerStyle);
         markerRef.current = markerFeature;
 
-        const polygonFeature = new Feature({
-            geometry: new Polygon([corners]),
-        });
-
-        const polygonStyle = new Style({
-            stroke: new Stroke({
-                color: "white",
-                width: 2,
-            }),
-            fill: new Fill({
-                color: "rgba(255, 255, 255, 0)",
-            }),
-        });
-
-        polygonFeature.setStyle(polygonStyle);
-
         const vectorSource = new VectorSource({
-            features: [markerFeature, polygonFeature],
+            features: [markerFeature],
         });
 
         const vectorLayer = new VectorLayer({
@@ -113,13 +92,34 @@ const MapComponent = () => {
 
         const kmlLayer = new VectorLayer({
             source: new VectorSource({
-                url: "centers.kml",
+                url: "worldwide.kml",
                 format: new KML(),
             }),
-            style: new Style({}),
+            opacity: 0,
         });
 
         kmlLayerRef.current = kmlLayer;
+
+        const closestMarkerSource = new VectorSource();
+        const closestMarkerLayer = new VectorLayer({
+            source: closestMarkerSource,
+        });
+        closestMarkerLayerRef.current = closestMarkerLayer;
+
+        const borderSource = new VectorSource();
+        const borderLayer = new VectorLayer({
+            source: borderSource,
+            style: new Style({
+                stroke: new Stroke({
+                    color: "white",
+                    width: 2,
+                }),
+                fill: new Fill({
+                    color: "rgba(255, 255, 255, 0.1)",
+                }),
+            }),
+        });
+        borderLayerRef.current = borderLayer;
 
         const initialMap = new Map({
             target: mapRef.current,
@@ -129,6 +129,8 @@ const MapComponent = () => {
                 }),
                 vectorLayer,
                 kmlLayer,
+                closestMarkerLayer,
+                borderLayer,
             ],
             view: new View({
                 center: sceneCenter,
@@ -154,22 +156,21 @@ const MapComponent = () => {
         const [lngValue, latValue] = toLonLat(coordinate);
         setCoordinates({ lat: latValue.toFixed(6), lng: lngValue.toFixed(6) });
 
-        // Update the form inputs with new values
         setLat(latValue.toFixed(6));
         setLng(lngValue.toFixed(6));
 
-        // Call displayClosestKmlPoint to update the closest KML point
         displayClosestKmlPoint(coordinate);
     };
 
     const displayClosestKmlPoint = (coordinate) => {
         if (!kmlLayerRef.current) return; // if kml layer is loaded
 
-        const kmlFeatures = kmlLayerRef.current.getSource().getFeatures(); // Get KML features
-        console.log("KML Features:", kmlFeatures);
+        const kmlFeatures = kmlLayerRef.current.getSource().getFeatures();
+
         let closestFeature = null;
         let closestDistance = Infinity;
 
+        // Reset the style of all KML features
         const emptyStyle = new Style({});
         kmlFeatures.forEach((feature) => {
             feature.setStyle(emptyStyle);
@@ -177,35 +178,63 @@ const MapComponent = () => {
 
         kmlFeatures.forEach((feature) => {
             const geom = feature.getGeometry();
-            if (
-                getDistance(
-                    toLonLat(coordinate),
-                    toLonLat(geom.getCoordinates())
-                ) < closestDistance
-            ) {
-                closestDistance = getDistance(
-                    toLonLat(coordinate),
-                    toLonLat(geom.getCoordinates())
-                );
+            const flatCoordinates = geom.flatCoordinates;
+            const featureCoord = toLonLat([
+                flatCoordinates[0],
+                flatCoordinates[1],
+            ]);
+            const distance = getDistance(toLonLat(coordinate), featureCoord);
+            if (distance < closestDistance) {
+                closestDistance = distance;
                 closestFeature = feature;
             }
         });
 
         if (closestFeature) {
-            closestFeature.setStyle(
+            const coords = closestFeature.getGeometry().flatCoordinates;
+            console.log(coords);
+
+            // ----------------- Drawing the marker ----------------- \\
+            closestMarkerLayerRef.current.getSource().clear();
+
+            const marker = new Feature({
+                geometry: new Point([coords[0], coords[1]]),
+            });
+
+            marker.setStyle(
                 new Style({
                     image: new Icon({
-                        src: "ylw-diamond.png", // You can use a custom icon for the closest point
-                        scale: 0.4, // Make the closest point larger or distinct
+                        src: "ylw-diamond.png",
+                        scale: 0.6,
                     }),
                 })
             );
+
+            closestMarkerLayerRef.current.getSource().addFeature(marker);
+
+            // ----------------- Drawing the Border ----------------- \\
+            const polygonCoords = [
+                [coords[3], coords[4]],
+                [coords[6], coords[7]],
+                [coords[9], coords[10]],
+                [coords[12], coords[13]],
+                [coords[3], coords[4]],
+            ];
+
+            const borderPolygon = new Feature({
+                geometry: new Polygon([polygonCoords]),
+            });
+
+            // Clear previous border and add new one
+            borderLayerRef.current.getSource().clear();
+            borderLayerRef.current.getSource().addFeature(borderPolygon);
         }
     };
 
     const handleCheckboxChange = (event) => {
         setIsNotificationEnabled(event.target.checked);
     };
+
     const handleSubmit = async (event) => {
         event.preventDefault();
         setFormMessage("");
