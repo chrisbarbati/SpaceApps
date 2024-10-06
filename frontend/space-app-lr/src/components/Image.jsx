@@ -6,35 +6,32 @@ const ImageComponent = () => {
     const [imageData, setImageData] = useState([]);
 
     const fetchImage = async () => {
+        const dummyData = {
+          LON_UL: 12.45,
+            LAT_UR: 41.9,
+            LON_UR: 12.54,
+            LAT_UL: 41.92,
+            cloudCoverage: 10,
+            bands: "B01,B02,B03,B04,B05"
+        };
+      
+        const queryString = new URLSearchParams(dummyData).toString();
+        const url = `http://localhost:8080/api/landsatImage?${queryString}`;
+      
         try {
-            const response = await axios.get(
-                "http://localhost:8080/api/landsatImage",
-                {
-                    headers: { "Content-Type": "application/json" },
-                    responseType: "arraybuffer",
-                    withCredentials: true,
-                }
-            );
-            const blob = new Blob([response.data], { type: "image/png" });
-            const url = URL.createObjectURL(blob);
-            setImageSrc(url);
-
-            // Set dummy data for image parameters
-            const dummyData = [
-                {
-                    lonUL: -12.44,
-                    latUL: 41.92,
-                    lonUR: 12.54,
-                    latUR: 41.87,
-                    maxCloudCoverage: 100,
-                    bands: ["B01", "B02", "BO3", "B04"],
-                },
-            ];
-            setImageData(dummyData);
+          const response = await fetch(url);
+          if (!response.ok) {
+            throw new Error('Network response was not ok');
+          }
+          const blob = await response.blob();
+          const imageUrl = URL.createObjectURL(blob);
+          const img = new Image();
+          img.src = imageUrl;
+          document.body.appendChild(img); // Append the image to the body or handle it as needed
         } catch (error) {
-            console.error("Error fetching image:", error);
+          console.error('There has been a problem with your fetch operation:', error);
         }
-    };
+      };
 
     return (
         <div>
