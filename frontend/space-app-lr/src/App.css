@@ -205,8 +205,9 @@ p {
     color: var(--text-color);
 }
 
-#sidebar {
-    max-width: 600px;
+.sidebar {
+    width: 350px;
+    min-width: 350px;
     height: auto;
     padding: 20px;
     background-color: var(--foreground-color);
@@ -366,6 +367,12 @@ input[type="email"]:focus,
     overflow: hidden;
 }
 
+/*Container*/
+.landsart-data-container{
+    background-color: var(--bg-color);
+    color: var(--text-color);
+}
+
 /*Image Comp Styles*/
 .image-container {
     background-color: var(--bg-color);
@@ -376,10 +383,37 @@ input[type="email"]:focus,
 }
 
 /*BANDS COMP STYLES*/
+.bands-container {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    min-height: 100vh;
+}
+
+.bands-sidebar {
+    height: auto;
+   width: 330px;
+    padding: 20px;
+    background-color: var(--foreground-color);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.bands-control-container{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 2em;
+    width: 100%;
+}
+
 .bands-grid {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
-    gap: 20px;
+    gap: 16px;
     margin-bottom: 20px;
     justify-items: center;
 }
@@ -391,9 +425,9 @@ input[type="email"]:focus,
 
 }
 
-@media screen and (max-width: 960px) {
+@media screen and (max-width: 1050px) {
     .bands-grid {
-        grid-template-columns: repeat(2, 1fr);
+        grid-template-columns: repeat(2 1fr);
     }
 
 }
@@ -411,6 +445,7 @@ input[type="email"]:focus,
     perspective: 1000px;
     width: 200px;
     text-align: center;
+    margin-bottom: 10px;
 }
 
 .bands-header p {
@@ -497,9 +532,3 @@ input[type="date"].styled-date:focus {
 
 }
 
-.date-fields-container {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 24px;
-}

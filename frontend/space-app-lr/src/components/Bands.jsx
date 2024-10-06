@@ -70,6 +70,8 @@ function Bands() {
     const [endDate, setEndDate] = useState("");
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+    const [imageSize, setImageSize] = useState("3x3");
+    const [cloudCoverage, setCloudCoverage] = useState(0);
 
     const handleCheckboxChange = (event) => {
         const { id, checked } = event.target;
@@ -122,11 +124,12 @@ function Bands() {
     if (error) return <p>Error: {error}</p>;
 
     return (
-        <div>
-            <h2 className="text-center mt-4">Landsat Bands</h2>
-
-            <form onSubmit={handleSubmit}>
-                <div className="date-fields-container mb-2">
+        <div className="bands-container">
+            <div className="sidebar">
+                <div className="form-header">
+                    <h2>Filters</h2>
+                </div>
+                <form onSubmit={handleSubmit}>
                     <label>
                         Start Date:
                         <input
@@ -147,8 +150,37 @@ function Bands() {
                             className="styled-date"
                         />
                     </label>
-                </div>
-                <div className="bands-header mt-2 text-center">
+                    <label>Pick the Image Size</label>
+                    <select
+                        id="image-size-selector"
+                        value={imageSize}
+                        onChange={(e) => setImageSize(e.target.value)}
+                        required
+                        className="styled-select fade-input"
+                    >
+                        <option value="3x3">3x3</option>
+                        <option value="full">Full</option>
+                    </select>
+                    <div className="slider-container">
+                        <label>Cloud Coverage: {cloudCoverage}%</label>
+                        <input
+                            type="range"
+                            min={0}
+                            max={100}
+                            value={cloudCoverage}
+                            onChange={(e) =>
+                                setCloudCoverage(Number(e.target.value))
+                            }
+                            className="slider"
+                        />
+                    </div>
+                    <button type="submit" className="primary-button">
+                        Fetch Data
+                    </button>
+                </form>
+            </div>
+            <div className="bands-control-container">
+                <div className="bands-header mt-2 text-center pt-2 pb-2">
                     <h3>Choose Your Desired Landsat Bands:</h3>
                     <p>Hover over each card to view detailed descriptions.</p>
                 </div>
@@ -175,11 +207,7 @@ function Bands() {
                         </div>
                     ))}
                 </div>
-
-                <button type="submit" className="primary-button">
-                    Fetch Data
-                </button>
-            </form>
+            </div>
         </div>
     );
 }

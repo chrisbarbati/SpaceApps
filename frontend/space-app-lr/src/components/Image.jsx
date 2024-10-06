@@ -34,11 +34,11 @@ const ImageComponent = () => {
     };
 
     return (
-        <div className="image-container mt-4">
+        <div className="image-container">
             <button onClick={fetchImage} className="primary-button">
                 Fetch Image
             </button>
-            <div className="image-result mt-4">
+            <div className="image-result mt-4 mb-1">
                 {imageSrc && <img src={imageSrc} alt="Fetched from backend" />}
             </div>
             {imageData.length > 0 && (
