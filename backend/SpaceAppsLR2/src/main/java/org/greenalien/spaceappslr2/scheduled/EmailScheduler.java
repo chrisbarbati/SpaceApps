@@ -51,7 +51,7 @@ public class EmailScheduler {
 
                 emailSenderService.sendEmail(email.getEmailAddress(), subject, body);
 
-                //emailService.deleteEmail(email.getId());
+                emailService.deleteEmail(email.getId());
             }else{
                 logger.info("No scheduled emails to send at this time");
             }
