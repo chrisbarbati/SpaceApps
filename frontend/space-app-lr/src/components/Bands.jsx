@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import Analysis from "./Analysis";
 
+const domain = "chrisbarbati.ddns.net:8082";
+
 const bandInfo = [
     {
         id: "B01",
@@ -106,7 +108,7 @@ function Bands({ coordinates, boundingBoxCoordinates }) {
         event.preventDefault();
         if (imageSize === "3x3") {
             const imageResponse = await axios
-                .get("http://localhost:8080/api/landsat3x3", {
+                .get("http://" + domain + "/api/landsat3x3", {
                     params: {
                         latitude: coordinates.lat,
                         longitude: coordinates.lng,
@@ -135,7 +137,7 @@ function Bands({ coordinates, boundingBoxCoordinates }) {
         } else if (imageSize === "full") {
             // console.log("Fetching full image...");
             const imageResponse = await axios
-                .get("http://localhost:8080/api/landsatImage", {
+                .get("http://" + domain + "/api/landsatImage", {
                     params: {
                         LON_UL: boundingBoxCoordinates.minLon.toString(),
                         LAT_UR: boundingBoxCoordinates.minLat.toString(),
@@ -166,7 +168,7 @@ function Bands({ coordinates, boundingBoxCoordinates }) {
         }
         console.log("Fetching landsat data...");
         const dataResponse = await axios.get(
-            "http://localhost:8080/api/landsatData",
+            "http://" + domain + "/api/landsatData",
             {
                 params: {
                     LON_UL: boundingBoxCoordinates.minLon.toString(),
