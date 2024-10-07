@@ -1,6 +1,7 @@
 package org.greenalien.spaceappslr2.api;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.logging.log4j.*;
 import org.greenalien.spaceappslr2.mail.EmailSenderService;
 import org.greenalien.spaceappslr2.mongo.Email;
@@ -209,10 +210,19 @@ public class ApiEndpoint {
      */
     @GetMapping("/nextFlyover")
     @CrossOrigin
-    public String getNextFlyoverTime(@RequestBody Map<String, String> request){
+    public JsonNode getNextFlyoverTime(@RequestParam Map<String, String> request){
         JsonNode results = getLandsatData(request);
 
-        return sentinelHubService.calculateNextFlyoverTime(results);
+        String nextFlyoverTime = sentinelHubService.calculateNextFlyoverTime(results);
+
+        logger.info("Next flyover time: " + nextFlyoverTime);
+
+        //Convert nextFlyOverTime to a JSON object
+        //ObjectMapper mapper = new ObjectMapper();
+
+        //JsonNode node = mapper.createObjectNode().put("nextFlyoverTime", nextFlyoverTime);
+
+        return null;
     }
 
     @PostMapping("/scheduleEmail")
