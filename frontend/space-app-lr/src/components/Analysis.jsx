@@ -150,7 +150,7 @@ const Analysis = ({ data }) => {
 
     const aggregatedData = useMemo(() => {
         const bands = {};
-        
+
         console.log("Data: " + data);
 
         data.data.forEach((interval) => {
@@ -173,7 +173,7 @@ const Analysis = ({ data }) => {
     }, [data]);
 
     return (
-        <div className="analysis-container">
+        <div className="analysis-container" id="analysis-page">
             <div className="sidebar">
                 <div className="form-header">
                     <h2>

@@ -142,7 +142,8 @@ function Bands({ coordinates, boundingBoxCoordinates }) {
             );
             setimageResponse(imageResponse);
         }
-        const dataResponse = await axios.get(
+        const dataResponse = await axios
+            .get
             // "http://localhost:8080/api/landsatData",
             // {
             //     params: {
@@ -157,7 +158,7 @@ function Bands({ coordinates, boundingBoxCoordinates }) {
             //     },
             //     headers: { "Content-Type": "application/json" },
             // }
-        );
+            ();
         //setdataResponse(dataResponse);
         console.log("Fetching landsat data...");
         console.log("Data Response:");
@@ -165,6 +166,10 @@ function Bands({ coordinates, boundingBoxCoordinates }) {
         //const landsatData = await getLandsetData();
         //console.log("Landsat Data:", landsatData);
         setIsAnalysisVisible(true);
+        const element = document.getElementById("analysis-page");
+        if (element) {
+            element.scrollIntoView();
+        }
     };
 
     return (
