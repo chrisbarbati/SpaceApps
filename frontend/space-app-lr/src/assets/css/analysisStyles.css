@@ -50,8 +50,8 @@
     width: 100%; 
     padding: 1em;
     margin: 0 auto;
+    background-color: var(--bg-color);
 }
-
 
 .centered-image {
     display: flex;

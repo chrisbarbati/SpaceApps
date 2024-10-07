@@ -12,9 +12,8 @@ import Point from "ol/geom/Point";
 import Polygon from "ol/geom/Polygon";
 import KML from "ol/format/KML";
 import { buffer as bufferExtent } from "ol/extent";
-
 import Bands from "./Bands";
-import Analysis from "./Analysis";
+import locationIcon from "../assets/current-location.svg";
 
 const MapComponent = () => {
     // map is used to store the reference to the map object
@@ -283,20 +282,24 @@ const MapComponent = () => {
                 <div className="sidebar">
                     <div className="form-header">
                         <h1 className="text-center pt-4">Search Location</h1>
-                        <input
-                            id="search-box"
-                            ref={searchBoxRef}
-                            type="text"
-                            placeholder="Search by Name..."
-                            className="mb-2"
-                        />
-                        <div>
+                        <div className="search-container">
+                            <input
+                                id="search-box"
+                                ref={searchBoxRef}
+                                type="text"
+                                placeholder="Search by Name..."
+                                className="mb-2"
+                            />
                             <button
                                 type="button"
-                                className="my-4 primary-button"
+                                className="currentLocationButton"
                                 onClick={handleUseCurrentLocation}
                             >
-                                Use Current Location
+                                <img
+                                    className="currentLocationButton"
+                                    src={locationIcon}
+                                    alt="Use Current Location"
+                                />
                             </button>
                         </div>
                         <p className="text-center">
@@ -343,6 +346,7 @@ const MapComponent = () => {
                             maxWidth: "1200px",
                             height: "600px",
                             border: "2px solid white",
+                            borderRadius: "5px",
                             boxShadow: "0 4px 20px rgba(0, 0, 0, 0.5)",
                         }}
                     ></div>

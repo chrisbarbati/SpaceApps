@@ -166,6 +166,38 @@ p {
     }
 }
 
+.search-container {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+}
+
+#search-box {
+    flex-grow: 1; /* This makes the input take all the available space */
+    padding: 8px;
+    font-size: 16px;
+    margin-right: 8px; /* Adds space between the input and the button */
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.currentLocationButton {
+    width: 40px; /* Makes the button a square */
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center; /* Centers the SVG inside the button */
+    border: none;
+    color: white;
+    border-radius: 4px;
+    cursor: pointer;
+    padding: 0;
+}
+
+.currentLocationButton:hover {
+    background-color: rgb(141, 141, 141); /* Darkens the button on hover */
+}
+
 .highlight {
     animation: fadeIn 0.5s ease forwards;
     padding: 20px;
