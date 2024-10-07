@@ -32,9 +32,6 @@ public class SpaceAppsLr2Application implements CommandLineRunner {
 	@Autowired
 	private EmailSenderService emailSenderService;
 
-	//@Autowired
-	//private OAuth2TokenService oAuth2TokenService;
-
 	@Autowired
 	private SentinelHubService sentinelHubService;
 
@@ -83,8 +80,8 @@ public class SpaceAppsLr2Application implements CommandLineRunner {
 		bands.add(Band.B10);
 
 		//sentinelHubService.requestPngImage(bboxBounds, from, to, width, height, maxCloudCoverage, bands);
-		JsonNode results = sentinelHubService.requestJsonData(bboxBounds, from, to, width, height, bands);
-		LOGGER.info(results.toPrettyString());
+//		JsonNode results = sentinelHubService.requestJsonData(bboxBounds, from, to, width, height, bands);
+//		LOGGER.info(results.toPrettyString());
 
 		//JsonNode results = sentinelHubService.searchCatalog(bboxBounds, from, to, width, height, bands);
 		//LOGGER.info(results.toPrettyString());

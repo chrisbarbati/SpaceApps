@@ -194,8 +194,11 @@ public class ApiEndpoint {
             return null;
         }
 
-        //Call the SentinelHub service to get a Landsat image
-        return sentinelHubService.requestJsonData(bboxBounds, from, to, width, height, bands);
+        JsonNode results = sentinelHubService.requestJsonData(bboxBounds, from, to, width, height, bands);
+
+        logger.info(results.toPrettyString());
+
+        return results;
     }
 
     /**
