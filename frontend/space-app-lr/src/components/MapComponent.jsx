@@ -217,10 +217,49 @@ const MapComponent = () => {
                 toLonLat([coords[6], coords[7]]),
                 toLonLat([coords[9], coords[10]]),
                 toLonLat([coords[12], coords[13]]),
-                toLonLat([coords[3], coords[4]]),
             ];
 
-            setBoundingBox(boundingBoxCoords);
+            const latLng = averageCoordinates(boundingBoxCoords);
+
+            //console.log("Average Coordinates: ", latLng);
+
+            setBoundingBox(latLng);
+
+            function averageCoordinates(coords) {
+                if (!coords || coords.length === 0) return null;
+            
+                let latSum = 0, lonSum = 0;
+            
+                // Sum all latitude and longitude values
+                coords.forEach(coord => {
+                    lonSum += coord[0]; // longitude
+                    latSum += coord[1]; // latitude
+                });
+            
+                // Find the average latitude and longitude (center point)
+                const avgLat = latSum / coords.length;
+                const avgLon = lonSum / coords.length;
+            
+                // Find the maximum distance from the center to one of the points
+                let maxLatDist = 0, maxLonDist = 0;
+                coords.forEach(coord => {
+                    const latDist = Math.abs(coord[1] - avgLat);
+                    const lonDist = Math.abs(coord[0] - avgLon);
+            
+                    if (latDist > maxLatDist) maxLatDist = latDist;
+                    if (lonDist > maxLonDist) maxLonDist = lonDist;
+                });
+            
+                // Define the square by extending equally in all directions from the center
+                const minLat = avgLat - maxLatDist;
+                const maxLat = avgLat + maxLatDist;
+                const minLon = avgLon - maxLonDist;
+                const maxLon = avgLon + maxLonDist;
+            
+                return { minLat, maxLat, minLon, maxLon };
+            }
+
+            //setBoundingBox(boundingBoxCoords);
 
             const borderPolygon = new Feature({
                 geometry: new Polygon([polygonCoords]),

@@ -1,5 +1,6 @@
 import React, { useMemo, useState, useEffect, useRef } from "react";
 import Chart from "chart.js/auto";
+import axios from "axios";
 import "../assets/css/analysisStyles.css";
 
 const ChartJsScatterPlot = ({ bandData, bandName }) => {

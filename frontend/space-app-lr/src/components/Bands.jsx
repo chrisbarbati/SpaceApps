@@ -2,62 +2,59 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import Analysis from "./Analysis";
 
+const domain = "chrisbarbati.ddns.net:8082";
+
 const bandInfo = [
     {
-        id: "B0",
+        id: "B01",
         label: "Coastal/Aerosol",
         description: `Wavelength: 0.43 – 0.45 µm (in the blue spectrum). Use Cases: Water Penetration, Aerosol Detection.`,
     },
     {
-        id: "B1",
+        id: "B02",
         label: "Blue Band",
         description: `Wavelength: 0.45 – 0.51 µm (blue spectrum). Use Cases: Water Body Mapping, Atmospheric Correction, Vegetation Analysis.`,
     },
     {
-        id: "B2",
+        id: "B03",
         label: "Green Band",
         description: `Wavelength: 0.52 – 0.60 µm (green spectrum). Use Cases: Vegetation Health, Soil/Water Differentiation, Urban Areas.`,
     },
     {
-        id: "B3",
+        id: "B04",
         label: "Red Band",
         description: `Wavelength: 0.63 – 0.68 µm (red spectrum). Use Cases: Vegetation Analysis, Soil and Urban Areas.`,
     },
     {
-        id: "B4",
+        id: "B05",
         label: "Near-Infrared (NIR)",
         description: `Wavelength: 0.85 – 0.88 µm (infrared spectrum). Use Cases: Vegetation Health, Water Body Mapping.`,
     },
     {
-        id: "B5",
+        id: "B06",
         label: "Shortwave Infrared 1 (SWIR 1)",
         description: `Wavelength: 1.57 – 1.65 µm (infrared spectrum). Use Cases: Soil and Vegetation Moisture, Burn Severity.`,
     },
     {
-        id: "B6",
+        id: "B07",
         label: "Shortwave Infrared 2 (SWIR 2)",
         description: `Wavelength: 2.11 – 2.29 µm (infrared spectrum). Use Cases: Moisture Content, Thermal Sensitivity.`,
     },
     {
-        id: "B7",
+        id: "B08",
         label: "Panchromatic (Pan) Band",
         description: `Wavelength: 0.50 – 0.68 µm (visible spectrum, all colors combined). Use Cases: Higher Resolution Imagery, Urban Areas.`,
     },
     {
-        id: "B8",
+        id: "B09",
         label: "Thermal Infrared 1 (TIR 1)",
         description: `Wavelength: 10.6 – 11.19 µm (thermal infrared spectrum). Use Cases: Surface Temperature.`,
     },
     {
-        id: "B9",
+        id: "B10",
         label: "Thermal Infrared 2 (TIR 2)",
         description: `Wavelength: 11.50 – 12.51 µm (thermal infrared spectrum). Use Cases: Surface Temperature, Volcanic and Heat Analysis.`,
-    },
-    {
-        id: "B10",
-        label: "Cirrus Band",
-        description: `Wavelength: 1.36 – 1.38 µm (infrared spectrum). Use Cases: Cloud Detection.`,
-    },
+    }
 ];
 
 function Bands({ coordinates, boundingBoxCoordinates }) {
@@ -72,7 +69,8 @@ function Bands({ coordinates, boundingBoxCoordinates }) {
     const [imageSize, setImageSize] = useState("3x3");
     const [cloudCoverage, setCloudCoverage] = useState(0);
     const [isAnalysisVisible, setIsAnalysisVisible] = useState(false);
-    const [data, setData] = useState(false);
+    const [nextFlyOverTime, setNextFlyOverTime] = useState("");
+
 
     // response states
     const [imageResponse, setimageResponse] = useState(null);
@@ -81,23 +79,46 @@ function Bands({ coordinates, boundingBoxCoordinates }) {
     const handleCheckboxChange = (event) => {
         const { id, checked } = event.target;
         setBands((prev) => ({ ...prev, [id]: checked }));
+        console.log(bands);
     };
 
     const handleSubmit = async (event) => {
+
+        //Iterate over all properties of the bands state object
+        const selectedBands = Object.keys(bands).filter((bandId) => bands[bandId]);
+
+        let selectedBandsCSV = ""
+
+        //For each value in selectedBands, concatenate into selectedBandsCSV
+        selectedBands.forEach((band) => {
+            selectedBandsCSV += band + ","
+        });
+
+        //Trim the trailing comma
+        selectedBandsCSV = selectedBandsCSV.substring(0, selectedBandsCSV.length - 1);
+
+        if (selectedBandsCSV === "") {
+            selectedBandsCSV = "B01,B02,B03,B04,B05"
+        }
+
+        console.log(selectedBandsCSV);
+
+        //console.log("Bounding Box Coordinates:");
+        //console.log(boundingBoxCoordinates.minLon.toString());
         event.preventDefault();
         if (imageSize === "3x3") {
             const imageResponse = await axios
-                .get("http://localhost:8080/api/landsat3x3", {
+                .get("http://" + domain + "/api/landsat3x3", {
                     params: {
-                        latitude: 32.5,
-                        longitude: 44.5,
-                        LON_UL: 44,
-                        LAT_UR: 32,
-                        LON_UR: 46,
-                        LAT_UL: 33,
+                        latitude: coordinates.lat,
+                        longitude: coordinates.lng,
+                        LON_UL: boundingBoxCoordinates.minLon.toString(),
+                        LAT_UR: boundingBoxCoordinates.minLat.toString(),
+                        LON_UR: boundingBoxCoordinates.maxLon.toString(),
+                        LAT_UL: boundingBoxCoordinates.maxLat.toString(),
                         startDate: startDate,
                         endDate: endDate,
-                        bands: "B01,B02,B03,B04,B05",
+                        bands: selectedBandsCSV,
                         cloudCoverage: cloudCoverage,
                     },
                     headers: { "Content-Type": "image/png" },
@@ -116,15 +137,15 @@ function Bands({ coordinates, boundingBoxCoordinates }) {
         } else if (imageSize === "full") {
             // console.log("Fetching full image...");
             const imageResponse = await axios
-                .get("http://localhost:8080/api/landsatImage", {
+                .get("http://" + domain + "/api/landsatImage", {
                     params: {
-                        LON_UL: 44,
-                        LAT_UR: 32,
-                        LON_UR: 46,
-                        LAT_UL: 33,
+                        LON_UL: boundingBoxCoordinates.minLon.toString(),
+                        LAT_UR: boundingBoxCoordinates.minLat.toString(),
+                        LON_UR: boundingBoxCoordinates.maxLon.toString(),
+                        LAT_UL: boundingBoxCoordinates.maxLat.toString(),
                         startDate: startDate,
                         endDate: endDate,
-                        bands: "B01,B02,B03,B04,B05",
+                        bands: selectedBandsCSV,
                         cloudCoverage: cloudCoverage,
                     },
                     headers: { "Content-Type": "image/png" },
@@ -147,17 +168,17 @@ function Bands({ coordinates, boundingBoxCoordinates }) {
         }
         console.log("Fetching landsat data...");
         const dataResponse = await axios.get(
-            "http://localhost:8080/api/landsatData",
+            "http://" + domain + "/api/landsatData",
             {
                 params: {
-                    LON_UL: 44,
-                    LAT_UR: 32,
-                    LON_UR: 46,
-                    LAT_UL: 33,
+                    LON_UL: boundingBoxCoordinates.minLon.toString(),
+                    LAT_UR: boundingBoxCoordinates.minLat.toString(),
+                    LON_UR: boundingBoxCoordinates.maxLon.toString(),
+                    LAT_UL: boundingBoxCoordinates.maxLat.toString(),
                     startDate: startDate,
                     endDate: endDate,
                     cloudCoverage: cloudCoverage,
-                    bands: "B01,B02",
+                    bands: selectedBandsCSV,
                 },
                 headers: { "Content-Type": "application/json" },
             }
