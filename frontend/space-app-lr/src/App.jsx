@@ -1,7 +1,7 @@
 import "./App.css";
 
 /**Views**/
-import LandingPage from "./components/Landing";
+import LandingPage from "./components/LandingPage";
 import MapComponent from "./components/MapComponent";
 
 function App() {
