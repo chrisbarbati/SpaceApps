@@ -105,9 +105,8 @@ function Bands({ coordinates, boundingBoxCoordinates }) {
         //console.log(boundingBoxCoordinates.minLon.toString());
         event.preventDefault();
         if (imageSize === "3x3") {
-            const imageResponse = await axios.get(
-                "http://localhost:8080/api/landsat3x3",
-                {
+            const imageResponse = await axios
+                .get("http://localhost:8080/api/landsat3x3", {
                     params: {
                         latitude: coordinates.lat,
                         longitude: coordinates.lng,
@@ -121,21 +120,22 @@ function Bands({ coordinates, boundingBoxCoordinates }) {
                         cloudCoverage: cloudCoverage,
                     },
                     headers: { "Content-Type": "image/png" },
-                    responseType: 'blob'
-                }
-            ).then(response => {
-                const reader = new FileReader();
-                reader.onloadend = function() {
-                    setimageResponse(reader.result); // base64 encoded string
-                };
-                reader.readAsDataURL(response.data); // Convert the blob to base64
-            })
-            .catch(error => console.error('Error fetching image:', error));
+                    responseType: "blob",
+                })
+                .then((response) => {
+                    const reader = new FileReader();
+                    reader.onloadend = function () {
+                        setimageResponse(reader.result); // base64 encoded string
+                    };
+                    reader.readAsDataURL(response.data); // Convert the blob to base64
+                })
+                .catch((error) =>
+                    console.error("Error fetching image:", error)
+                );
         } else if (imageSize === "full") {
             // console.log("Fetching full image...");
-            const imageResponse = await axios.get(
-                "http://localhost:8080/api/landsatImage",
-                {
+            const imageResponse = await axios
+                .get("http://localhost:8080/api/landsatImage", {
                     params: {
                         LON_UL: boundingBoxCoordinates.minLon.toString(),
                         LAT_UR: boundingBoxCoordinates.minLat.toString(),
@@ -147,16 +147,18 @@ function Bands({ coordinates, boundingBoxCoordinates }) {
                         cloudCoverage: cloudCoverage,
                     },
                     headers: { "Content-Type": "image/png" },
-                    responseType: 'blob'
-                }
-            ).then(response => {
-                const reader = new FileReader();
-                reader.onloadend = function() {
-                    setimageResponse(reader.result); // base64 encoded string
-                };
-                reader.readAsDataURL(response.data); // Convert the blob to base64
-            })
-            .catch(error => console.error('Error fetching image:', error));
+                    responseType: "blob",
+                })
+                .then((response) => {
+                    const reader = new FileReader();
+                    reader.onloadend = function () {
+                        setimageResponse(reader.result); // base64 encoded string
+                    };
+                    reader.readAsDataURL(response.data); // Convert the blob to base64
+                })
+                .catch((error) =>
+                    console.error("Error fetching image:", error)
+                );
 
             // console.log("Image Response retrieved");
             // console.log("Image Response:");
@@ -183,26 +185,10 @@ function Bands({ coordinates, boundingBoxCoordinates }) {
         // console.log("Data Response:");
         // console.log(dataResponse);
         setIsAnalysisVisible(true);
-
-        // const flyoverTimeResponse = await axios.get(
-        //     "http://localhost:8080/api/nextFlyover",
-        //     {
-        //         params: {
-        //             LON_UL: 44,
-        //             LAT_UR: 32,
-        //             LON_UR: 46,
-        //             LAT_UL: 33,
-        //             startDate: "2022-10-01",
-        //             endDate: "2022-10-02",
-        //             cloudCoverage: 100,
-        //             bands: "B01,B02"
-        //         }
-        //     }
-        // ).then((response) => {
-        //     console.log(response);
-        //     setNextFlyOverTime(response);
-        // }).catch(error => console.error('Error fetching flyover data:', error));
-        // console.log(dataResponse);
+        const element = document.getElementById("analysis-page");
+        if (element) {
+            element.scrollIntoView();
+        }
     };
 
     return (
@@ -294,7 +280,9 @@ function Bands({ coordinates, boundingBoxCoordinates }) {
                     </div>
                 </div>
             </div>
-            {isAnalysisVisible && <Analysis data={dataResponse} imageResponse={imageResponse} />}
+            {isAnalysisVisible && (
+                <Analysis data={dataResponse} imageResponse={imageResponse} />
+            )}
         </>
     );
 }

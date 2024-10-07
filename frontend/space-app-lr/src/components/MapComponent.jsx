@@ -281,10 +281,6 @@ const MapComponent = () => {
         }
     };
 
-    const handleCheckboxChange = (event) => {
-        setIsNotificationEnabled(event.target.checked);
-    };
-
     const handleSubmit = async (event) => {
         event.preventDefault();
         const element = document.getElementById("bands-page");
@@ -327,7 +323,6 @@ const MapComponent = () => {
                                 ref={searchBoxRef}
                                 type="text"
                                 placeholder="Search by Name..."
-                                className="mb-2"
                             />
                             <button
                                 type="button"
@@ -341,7 +336,7 @@ const MapComponent = () => {
                                 />
                             </button>
                         </div>
-                        <p className="text-center">
+                        <p className="text-center pt-2">
                             Or input Lat/Long manually:
                         </p>
                     </div>

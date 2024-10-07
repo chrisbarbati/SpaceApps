@@ -153,6 +153,9 @@ const Analysis = ({ data, imageResponse }) => {
     const aggregatedData = useMemo(() => {
         const bands = {};
 
+        console.log("Data:");
+        console.log(data);
+
         data.data.data.forEach((interval) => {
             if (
                 interval.outputs &&
@@ -173,7 +176,7 @@ const Analysis = ({ data, imageResponse }) => {
     }, [data]);
 
     return (
-        <div className="analysis-container">
+        <div className="analysis-container" id="analysis-page">
             <div className="sidebar">
                 <div className="form-header">
                     <h2>
