@@ -1,7 +1,11 @@
 C:\Users\Chris\IdeaProjects\SpaceAppsLR\SpaceApps\backend\SpaceAppsLR2\src\main\java\org\greenalien\spaceappslr2\api\ApiEndpoint.java
+C:\Users\Chris\IdeaProjects\SpaceAppsLR\SpaceApps\backend\SpaceAppsLR2\src\main\java\org\greenalien\spaceappslr2\auth\OAuth2TokenService.java
 C:\Users\Chris\IdeaProjects\SpaceAppsLR\SpaceApps\backend\SpaceAppsLR2\src\main\java\org\greenalien\spaceappslr2\mail\EmailSenderService.java
 C:\Users\Chris\IdeaProjects\SpaceAppsLR\SpaceApps\backend\SpaceAppsLR2\src\main\java\org\greenalien\spaceappslr2\mail\MailConfig.java
 C:\Users\Chris\IdeaProjects\SpaceAppsLR\SpaceApps\backend\SpaceAppsLR2\src\main\java\org\greenalien\spaceappslr2\mongo\Email.java
 C:\Users\Chris\IdeaProjects\SpaceAppsLR\SpaceApps\backend\SpaceAppsLR2\src\main\java\org\greenalien\spaceappslr2\mongo\EmailRepository.java
 C:\Users\Chris\IdeaProjects\SpaceAppsLR\SpaceApps\backend\SpaceAppsLR2\src\main\java\org\greenalien\spaceappslr2\mongo\EmailService.java
+C:\Users\Chris\IdeaProjects\SpaceAppsLR\SpaceApps\backend\SpaceAppsLR2\src\main\java\org\greenalien\spaceappslr2\scheduled\EmailScheduler.java
+C:\Users\Chris\IdeaProjects\SpaceAppsLR\SpaceApps\backend\SpaceAppsLR2\src\main\java\org\greenalien\spaceappslr2\sentinelHub\Band.java
+C:\Users\Chris\IdeaProjects\SpaceAppsLR\SpaceApps\backend\SpaceAppsLR2\src\main\java\org\greenalien\spaceappslr2\sentinelHub\SentinelHubService.java
 C:\Users\Chris\IdeaProjects\SpaceAppsLR\SpaceApps\backend\SpaceAppsLR2\src\main\java\org\greenalien\spaceappslr2\SpaceAppsLr2Application.java

@@ -12,6 +12,7 @@ import org.apache.hc.core5.http.HttpEntity;
 import org.apache.hc.core5.http.io.entity.EntityUtils;
 import org.apache.hc.core5.http.io.entity.StringEntity;
 import org.apache.logging.log4j.*;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -44,18 +45,23 @@ public class SentinelHubService {
 
     private String oauth2Token;
 
+    private String clientID = "7fbba9bc-1184-451e-8798-57f32b1d863c";
+
+    private String clientSecret = "ZobfJdr20gkraR8VBLSidTgf8ISXpUb8";
+
     /**
      * Get the OAuth2 token from the Sentinel Hub API
      *
      * @return
      */
     public String getOAuth2Token() {
+
+        logger.info(clientID);
+        logger.info(clientSecret);
+
         String token = null;
 
         String requestURL = "https://services.sentinel-hub.com/auth/realms/main/protocol/openid-connect/token";
-
-        String clientID = "218715cf-e392-4500-9ddf-81b5bc32b0f8";
-        String clientSecret = "c8VIYSpRdxHdUfaGcLcFDpbnyrk6OA1I";
 
         String body = "grant_type=client_credentials&client_id=" + clientID + "&client_secret=" + clientSecret;
 

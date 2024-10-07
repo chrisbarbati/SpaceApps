@@ -95,6 +95,10 @@ function Bands({ coordinates, boundingBoxCoordinates }) {
         //Trim the trailing comma
         selectedBandsCSV = selectedBandsCSV.substring(0, selectedBandsCSV.length - 1);
 
+        if (selectedBandsCSV === "") {
+            selectedBandsCSV = "B01,B02,B03,B04,B05"
+        }
+
         console.log(selectedBandsCSV);
 
         //console.log("Bounding Box Coordinates:");
