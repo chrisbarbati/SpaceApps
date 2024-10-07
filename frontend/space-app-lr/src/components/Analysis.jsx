@@ -133,7 +133,8 @@ const calculateLineOfBestFit = (data) => {
     return { slope, intercept };
 };
 
-const Analysis = ({ data }) => {
+// i removed data from here
+const Analysis = ({ data, imageResponse }) => {
     const [email, setEmail] = useState("");
     const [leadTime, setLeadTime] = useState("");
     const [cloudCoverage, setCloudCoverage] = useState(50);
@@ -151,9 +152,10 @@ const Analysis = ({ data }) => {
     const aggregatedData = useMemo(() => {
         const bands = {};
 
-        console.log("Data: " + data);
+        console.log("Data:");
+        console.log(data);
 
-        data.data.forEach((interval) => {
+        data.data.data.forEach((interval) => {
             if (
                 interval.outputs &&
                 interval.outputs.data &&
@@ -232,7 +234,11 @@ const Analysis = ({ data }) => {
             <div className="chart-container">
                 <h1 className="pb-2">Landsat Results</h1>
                 <div className="image-result pb-4">
-                    <img src="/output.png" alt="Landsat Output" />
+                    <img
+                        src={imageResponse}
+                        alt="Fetched from backend"
+                        className="img-fluid"
+                    />
                 </div>
                 <div className="chart-grid pt-4">
                     {Object.entries(aggregatedData).map(([band, bandData]) => (

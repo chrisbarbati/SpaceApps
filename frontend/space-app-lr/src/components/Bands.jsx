@@ -83,30 +83,11 @@ function Bands({ coordinates, boundingBoxCoordinates }) {
         setBands((prev) => ({ ...prev, [id]: checked }));
     };
 
-    const getLandsetData = async () => {
-        // try {
-        //     console.log("Fetching landsat data...");
-        //     const response = await axios.get(
-        //         "http://localhost:8080/api/landsatData"
-        //     );
-        //     //const response = await fetch("/example.json"); // Adjust the filename as needed
-        //     if (!response.ok) {
-        //         throw new Error("Network response was not ok");
-        //     }
-        //     const jsonData = await response.json();
-        //     setData(jsonData);
-        //     return jsonData;
-        // } catch (error) {
-        //     console.log("Failed to fetch landset data", error);
-        // }
-    };
-
     const handleSubmit = async (event) => {
         event.preventDefault();
         if (imageSize === "3x3") {
-            const imageResponse = await axios.get(
-                "http://localhost:8080/api/landsat3x3",
-                {
+            const imageResponse = await axios
+                .get("http://localhost:8080/api/landsat3x3", {
                     params: {
                         latitude: 32.5,
                         longitude: 44.5,
@@ -120,13 +101,22 @@ function Bands({ coordinates, boundingBoxCoordinates }) {
                         cloudCoverage: cloudCoverage,
                     },
                     headers: { "Content-Type": "image/png" },
-                }
-            );
-            setimageResponse(imageResponse);
+                    responseType: "blob",
+                })
+                .then((response) => {
+                    const reader = new FileReader();
+                    reader.onloadend = function () {
+                        setimageResponse(reader.result); // base64 encoded string
+                    };
+                    reader.readAsDataURL(response.data); // Convert the blob to base64
+                })
+                .catch((error) =>
+                    console.error("Error fetching image:", error)
+                );
         } else if (imageSize === "full") {
-            const imageResponse = await axios.get(
-                "http://localhost:8080/api/landsatImage",
-                {
+            // console.log("Fetching full image...");
+            const imageResponse = await axios
+                .get("http://localhost:8080/api/landsatImage", {
                     params: {
                         LON_UL: 44,
                         LAT_UR: 32,
@@ -138,33 +128,43 @@ function Bands({ coordinates, boundingBoxCoordinates }) {
                         cloudCoverage: cloudCoverage,
                     },
                     headers: { "Content-Type": "image/png" },
-                }
-            );
-            setimageResponse(imageResponse);
+                    responseType: "blob",
+                })
+                .then((response) => {
+                    const reader = new FileReader();
+                    reader.onloadend = function () {
+                        setimageResponse(reader.result); // base64 encoded string
+                    };
+                    reader.readAsDataURL(response.data); // Convert the blob to base64
+                })
+                .catch((error) =>
+                    console.error("Error fetching image:", error)
+                );
+
+            // console.log("Image Response retrieved");
+            // console.log("Image Response:");
+            // console.log(imageResponse);
         }
-        const dataResponse = await axios
-            .get
-            // "http://localhost:8080/api/landsatData",
-            // {
-            //     params: {
-            //         LON_UL: 44,
-            //         LAT_UR: 32,
-            //         LON_UR: 46,
-            //         LAT_UL: 33,
-            //         startDate: startDate,
-            //         endDate: endDate,
-            //         cloudCoverage: cloudCoverage,
-            //         bands: "B01,B02"
-            //     },
-            //     headers: { "Content-Type": "application/json" },
-            // }
-            ();
-        //setdataResponse(dataResponse);
         console.log("Fetching landsat data...");
-        console.log("Data Response:");
-        console.log(dataResponse);
-        //const landsatData = await getLandsetData();
-        //console.log("Landsat Data:", landsatData);
+        const dataResponse = await axios.get(
+            "http://localhost:8080/api/landsatData",
+            {
+                params: {
+                    LON_UL: 44,
+                    LAT_UR: 32,
+                    LON_UR: 46,
+                    LAT_UL: 33,
+                    startDate: startDate,
+                    endDate: endDate,
+                    cloudCoverage: cloudCoverage,
+                    bands: "B01,B02",
+                },
+                headers: { "Content-Type": "application/json" },
+            }
+        );
+        setdataResponse(dataResponse);
+        // console.log("Data Response:");
+        // console.log(dataResponse);
         setIsAnalysisVisible(true);
         const element = document.getElementById("analysis-page");
         if (element) {
@@ -261,7 +261,9 @@ function Bands({ coordinates, boundingBoxCoordinates }) {
                     </div>
                 </div>
             </div>
-            {isAnalysisVisible && <Analysis data={data} />}
+            {isAnalysisVisible && (
+                <Analysis data={dataResponse} imageResponse={imageResponse} />
+            )}
         </>
     );
 }
