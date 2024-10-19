@@ -28,3 +28,4 @@ backend/SpaceAppsLR2/src/main/resources/developer.properties
 backend/SpaceAppsLR2/target/classes/developer.properties
 backend/SpaceAppsLR2/target/classes/developer.properties
 *.properties
+slides
